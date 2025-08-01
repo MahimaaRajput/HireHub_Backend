@@ -17,7 +17,7 @@ public class JwtProvider {
         String email = auth.getName();
         String role = ""; // Default role blank
 
-        // ✅ Extract 1st role from authorities
+        //  Extract 1st role from authorities
         Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
         if (!authorities.isEmpty()) {
             role = authorities.iterator().next().getAuthority();  // e.g., ROLE_RECRUITER or ROLE_JOBSEEKER
