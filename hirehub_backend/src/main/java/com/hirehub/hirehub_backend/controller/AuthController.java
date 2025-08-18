@@ -1,11 +1,13 @@
 package com.hirehub.hirehub_backend.controller;
 
 import com.hirehub.hirehub_backend.dto.AuthResponse;
+import com.hirehub.hirehub_backend.dto.UserLoginRequest;
 import com.hirehub.hirehub_backend.dto.UserRegisterRequest;
 import com.hirehub.hirehub_backend.entity.User;
 import com.hirehub.hirehub_backend.service.AuthService;
 import com.hirehub.hirehub_backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,5 +24,19 @@ public class AuthController {
     public ResponseEntity<AuthResponse> registerUser(@RequestBody UserRegisterRequest user) throws Exception {
         AuthResponse response= authService.register(user);
         return ResponseEntity.ok(response);
+    }
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@RequestBody UserLoginRequest request) {
+        try {
+            AuthResponse response = authService.login(request);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(AuthResponse.builder()
+                            .message("failed")
+                            .token(null)
+                            .message(e.getMessage())
+                            .build());
+        }
     }
 }

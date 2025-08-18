@@ -2,6 +2,7 @@ package com.hirehub.hirehub_backend.service;
 
 import com.hirehub.hirehub_backend.config.JwtProvider;
 import com.hirehub.hirehub_backend.dto.AuthResponse;
+import com.hirehub.hirehub_backend.dto.UserLoginRequest;
 import com.hirehub.hirehub_backend.dto.UserRegisterRequest;
 import com.hirehub.hirehub_backend.dto.UserResponse;
 import com.hirehub.hirehub_backend.entity.User;
@@ -47,5 +48,36 @@ public class AuthService {
                 .message("register success")
                 .build();
     }
+
+
+        public AuthResponse login(UserLoginRequest request) {
+
+            // 1. Check if user exists with given email
+            User user = userRepository.findByEmail(request.getEmail())
+                    .orElseThrow(() -> new RuntimeException("Email not registered"));
+
+            // 2. Check password
+            if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+                throw new RuntimeException("Invalid password");
+            }
+
+            // 3. Create Authentication object
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    user.getEmail(),
+                    null,
+                    List.of(new SimpleGrantedAuthority(user.getRole().name()))
+            );
+
+            // 4. Generate JWT token
+            String token = JwtProvider.generateToken(authentication);
+
+            // 5. Return token + user data
+            return AuthResponse.builder()
+                    .token(token)
+                    .message("Login success")
+                    .build();
+        }
+
+
 
 }
