@@ -31,13 +31,15 @@ public class AuthService {
         if (founduser.isPresent()) {
             throw new Exception("user already registered with this email: " + reqUser.getEmail());
         }
-        User user = User.builder()
-                .fullName(reqUser.getFullName())
-                .email(reqUser.getEmail())
-                .password(passwordEncoder.encode(reqUser.getPassword()))
-                .role(reqUser.getRole())
-                .gender(reqUser.getGender())
-                .build();
+        User user= reqUser.toEntity();
+//        User user = User.builder()
+//                .fullName(reqUser.getFullName())
+//                .email(reqUser.getEmail())
+//                .password(passwordEncoder.encode(reqUser.getPassword()))
+//                .role(reqUser.getRole())
+//                .gender(reqUser.getGender())
+//                .build();
+        user.setPassword(passwordEncoder.encode(reqUser.getPassword()));
         userRepository.save(user);
         Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(),
                 null,
