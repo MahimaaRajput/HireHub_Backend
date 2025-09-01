@@ -22,6 +22,8 @@ public class JwtProvider {
         if (!authorities.isEmpty()) {
             role = authorities.iterator().next().getAuthority();  // e.g., ROLE_RECRUITER or ROLE_JOBSEEKER
         }
+        System.out.println("Role being added to JWT: " + role);
+
 
         return Jwts.builder()
                 .setIssuer("Mahima")
@@ -31,6 +33,7 @@ public class JwtProvider {
                 .claim("role", role)
                 .signWith(key)
                 .compact();
+
     }
     public static String getEmailFromToken(String token)
     {
