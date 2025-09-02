@@ -1,5 +1,6 @@
 package com.hirehub.hirehub_backend.service;
 
+import com.hirehub.hirehub_backend.config.JwtProvider;
 import com.hirehub.hirehub_backend.entity.User;
 import com.hirehub.hirehub_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,5 +19,11 @@ public class UserServiceImpl implements UserService{
            throw new Exception("User not found with this email");
        }
        return user;
+    }
+    @Override
+    public Optional<User> findUserByJwt(String jwt) {
+        String email = JwtProvider.getEmailFromToken(jwt);
+        Optional<User> user = userRepository.findByEmail(email);
+        return user;
     }
 }

@@ -15,20 +15,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JwtValidator extends OncePerRequestFilter {
+public class JwtValidator extends OncePerRequestFilter
+{
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String jwt = request.getHeader(JwtConstant.JWT_HEADER);
+        String jwtHeader = request.getHeader(JwtConstant.JWT_HEADER);
 
-        if (jwt != null) {
+        if (jwtHeader != null && jwtHeader.startsWith("Bearer ")) {
+            String jwt = jwtHeader.substring(7);
             try {
                 String email = JwtProvider.getEmailFromToken(jwt);
                 String role = JwtProvider.getRoleFromToken(jwt); //  Get role
 
                 List<GrantedAuthority> authorities = new ArrayList<>();
-                authorities.add(() -> role); //  Add role as authority
+                authorities.add(() -> "ROLE_" + role); //  Add role as authority
 
                 Authentication authentication =
                         new UsernamePasswordAuthenticationToken(email, null, authorities);

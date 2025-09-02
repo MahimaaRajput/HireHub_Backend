@@ -17,4 +17,5 @@ public class UserResponse {
     private Long id;
     private Role role;
     private Gender gender;
+    private Long profileId;
 }

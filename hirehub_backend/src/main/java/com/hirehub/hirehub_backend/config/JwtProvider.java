@@ -21,6 +21,7 @@ public class JwtProvider {
         Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
         if (!authorities.isEmpty()) {
             role = authorities.iterator().next().getAuthority();  // e.g., ROLE_RECRUITER or ROLE_JOBSEEKER
+
         }
         System.out.println("Role being added to JWT: " + role);
 
@@ -37,7 +38,7 @@ public class JwtProvider {
     }
     public static String getEmailFromToken(String token)
     {
-        token=token.substring(7); //remove "Bearer "
+//        token=token.substring(7); //remove "Bearer "
         Claims claims=Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()

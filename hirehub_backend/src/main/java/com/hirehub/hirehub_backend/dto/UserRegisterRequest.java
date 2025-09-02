@@ -1,5 +1,6 @@
 package com.hirehub.hirehub_backend.dto;
 
+import com.hirehub.hirehub_backend.entity.Profile;
 import com.hirehub.hirehub_backend.entity.User;
 import com.hirehub.hirehub_backend.enums.Gender;
 import com.hirehub.hirehub_backend.enums.Role;
@@ -33,16 +34,24 @@ public class UserRegisterRequest {
     private Gender gender;
    @NotNull(message = "role is required field")
     private Role role;
+    private Long profileId;
 
 
     public User toEntity()
     {
+        Profile profile = null;
+        if (this.profileId != null) {
+            profile = new Profile();
+            profile.setId(this.profileId);
+        }
+
         return User.builder()
                 .email(this.email)
                 .password(this.password)
                 .fullName(this.fullName)
                 .gender(this.gender)
                 .role(this.role)
+                .profile(profile)
                 .build();
     }
 

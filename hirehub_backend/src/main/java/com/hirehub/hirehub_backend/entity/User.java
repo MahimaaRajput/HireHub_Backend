@@ -30,12 +30,18 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    @OneToOne
+    @JoinColumn(name = "profile_id")
+    private Profile profile;
+
+
     public UserResponse toResponse() {
         return UserResponse.builder()
                 .email(this.email)
                 .fullName(this.fullName)
                 .gender(this.gender)
                 .role(this.role)
+                .profileId(this.profile != null ? this.profile.getId() : null)
                 .build();
     }
 

@@ -25,6 +25,8 @@ public class AuthService {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private ProfileService profileService;
 
     public AuthResponse register(UserRegisterRequest reqUser) throws Exception {
         Optional<User> founduser = userRepository.findByEmail(reqUser.getEmail());
@@ -32,6 +34,7 @@ public class AuthService {
             throw new Exception("user already registered with this email: " + reqUser.getEmail());
         }
         User user= reqUser.toEntity();
+        reqUser.setProfileId(profileService.createProfile(reqUser.getEmail()));
 //        User user = User.builder()
 //                .fullName(reqUser.getFullName())
 //                .email(reqUser.getEmail())
