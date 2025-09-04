@@ -8,12 +8,13 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 
 @Service
-public class ProfileServiceImpl implements ProfileService{
+public class ProfileServiceImpl implements ProfileService {
     @Autowired
     private ProfileRepository profileRepository;
+
     @Override
     public Long createProfile(String email) {
-        Profile profile= new Profile();
+        Profile profile = new Profile();
         profile.setEmail(email);
         profile.setSkills(new ArrayList<>());
         profile.setExperiences(new ArrayList<>());
@@ -24,13 +25,24 @@ public class ProfileServiceImpl implements ProfileService{
 
     @Override
     public ProfileDto getProfile(Long id) throws Exception {
-        return profileRepository.findById(id).orElseThrow(()-> new Exception("Profile not found with this id")).toDto();
+        return profileRepository.findById(id).orElseThrow(() -> new Exception("Profile not found with this id")).toDto();
     }
 
     @Override
-    public ProfileDto updateProfile(ProfileDto profileDto) throws Exception {
-         profileRepository.findById(profileDto.getId()).orElseThrow(()-> new Exception("Profile not found with this id")).toDto();
-        profileRepository.save(profileDto.toEntity());
-        return profileDto;
+    public ProfileDto updateProfileByEmail(String email, ProfileDto profileDto) throws Exception {
+        Profile existingProfile = profileRepository.findByEmail(email)
+                .orElseThrow(() -> new Exception("Profile not found for this user"));
+
+        // Update only allowed fields
+        existingProfile.setJobTitle(profileDto.getJobTitle());
+        existingProfile.setLocation(profileDto.getLocation());
+        existingProfile.setAbout(profileDto.getAbout());
+        existingProfile.setSkills(profileDto.getSkills());
+        existingProfile.setExperiences(profileDto.getExperiences());
+        existingProfile.setCertifications(profileDto.getCertifications());
+
+        profileRepository.save(existingProfile);
+        return existingProfile.toDto();
     }
+
 }

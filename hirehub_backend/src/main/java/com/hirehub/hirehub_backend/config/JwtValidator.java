@@ -15,8 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JwtValidator extends OncePerRequestFilter
-{
+public class JwtValidator extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -24,13 +23,21 @@ public class JwtValidator extends OncePerRequestFilter
         String jwtHeader = request.getHeader(JwtConstant.JWT_HEADER);
 
         if (jwtHeader != null && jwtHeader.startsWith("Bearer ")) {
-            String jwt = jwtHeader.substring(7);
+            // Extract token safely
+            String jwt = jwtHeader.substring(7).trim();
+            jwt = jwt.replaceAll("\\s+", ""); // remove ALL whitespace
+
+
             try {
+                // Log for debugging (remove in production)
+                System.out.println("JWT Header: [" + jwtHeader + "]");
+                System.out.println("Extracted Token: [" + jwt + "]");
+
                 String email = JwtProvider.getEmailFromToken(jwt);
-                String role = JwtProvider.getRoleFromToken(jwt); //  Get role
+                String role = JwtProvider.getRoleFromToken(jwt);
 
                 List<GrantedAuthority> authorities = new ArrayList<>();
-                authorities.add(() -> "ROLE_" + role); //  Add role as authority
+                authorities.add(() -> "ROLE_" + role);
 
                 Authentication authentication =
                         new UsernamePasswordAuthenticationToken(email, null, authorities);
@@ -38,11 +45,11 @@ public class JwtValidator extends OncePerRequestFilter
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
             } catch (Exception e) {
-                throw new BadCredentialsException("Invalid Token");
+                e.printStackTrace(); // log exact error
+                throw new BadCredentialsException("Invalid Token: " + e.getMessage(), e);
             }
         }
 
         filterChain.doFilter(request, response);
     }
 }
-
