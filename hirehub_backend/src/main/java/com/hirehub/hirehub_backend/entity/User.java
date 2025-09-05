@@ -31,7 +31,7 @@ public class User {
     private Gender gender;
 
     @OneToOne
-    @JoinColumn(name = "profile_id")
+//    @JoinColumn(name = "profile_id")
     private Profile profile;
 
 

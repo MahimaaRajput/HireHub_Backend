@@ -22,9 +22,9 @@ public class Profile {
     private String about;
     @ElementCollection
     private List<String>skills;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Experience> experiences;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Certification> certifications;
 
     public ProfileDto toDto()
