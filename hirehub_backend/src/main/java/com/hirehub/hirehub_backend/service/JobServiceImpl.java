@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class JobServiceImpl implements JobService{
@@ -30,6 +32,11 @@ public class JobServiceImpl implements JobService{
         job.setApplicants(new ArrayList<>());
         Job savedJob = jobRepository.save(job);
         return savedJob.toDto();
+    }
+
+    @Override
+    public List<JobDto> getAllJob() {
+        return jobRepository.findAll().stream().map(Job::toDto).collect(Collectors.toList());
     }
 
 

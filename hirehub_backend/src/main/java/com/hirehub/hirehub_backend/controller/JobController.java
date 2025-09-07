@@ -7,22 +7,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Validated
-@RequestMapping("api/recruiter")
 public class JobController {
     @Autowired
     private JobService jobService;
 
-    @PostMapping("/post")
+    @PostMapping("api/recruiter/post")
     public ResponseEntity<JobDto>postJob(@RequestBody @Valid JobDto jobDto)
     {
         return new ResponseEntity<>(jobService.postJob(jobDto), HttpStatus.CREATED);
+    }
+    @GetMapping("api/common/getall")
+    public ResponseEntity<List<JobDto>> getAllJobs()
+    {
+        return new ResponseEntity<>(jobService.getAllJob(),HttpStatus.FOUND);
     }
 
 }
