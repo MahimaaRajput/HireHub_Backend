@@ -1,5 +1,6 @@
 package com.hirehub.hirehub_backend.entity;
 
+import com.hirehub.hirehub_backend.dto.ApplicantDto;
 import com.hirehub.hirehub_backend.dto.JobDto;
 import com.hirehub.hirehub_backend.enums.JobStatus;
 import jakarta.persistence.*;
@@ -34,7 +35,7 @@ public class Job {
 
     public JobDto toDto()
     {
-        return new JobDto(this.id,this.jobTitle,this.company,this.applicants,this.about,this.experience,
+        return new JobDto(this.id,this.jobTitle,this.company,this.applicants!=null?this.applicants.stream().map(Applicant::toDto).toList():null,this.about,this.experience,
                 this.jobType,this.location,this.packageOffered,this.description,this.skillsRequired,this.jobStatus);
     }
 
