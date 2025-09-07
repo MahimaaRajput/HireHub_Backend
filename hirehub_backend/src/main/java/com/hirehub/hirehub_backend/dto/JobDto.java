@@ -1,5 +1,6 @@
 package com.hirehub.hirehub_backend.dto;
 
+import com.hirehub.hirehub_backend.entity.Applicant;
 import com.hirehub.hirehub_backend.entity.Job;
 import com.hirehub.hirehub_backend.enums.JobStatus;
 import jakarta.persistence.GeneratedValue;

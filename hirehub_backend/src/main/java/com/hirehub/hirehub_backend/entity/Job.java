@@ -1,12 +1,8 @@
 package com.hirehub.hirehub_backend.entity;
 
-import com.hirehub.hirehub_backend.dto.Applicant;
 import com.hirehub.hirehub_backend.dto.JobDto;
 import com.hirehub.hirehub_backend.enums.JobStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +19,7 @@ public class Job {
     private Long id;
     private String jobTitle;
     private String company;
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Applicant> applicants;
     private String about;
     private String experience;
@@ -30,7 +27,9 @@ public class Job {
     private String location;
     private Long packageOffered;
     private String description;
+    @ElementCollection
     private List<String> skillsRequired;
+    @Enumerated(EnumType.STRING)
     private JobStatus jobStatus;
 
     public JobDto toDto()
