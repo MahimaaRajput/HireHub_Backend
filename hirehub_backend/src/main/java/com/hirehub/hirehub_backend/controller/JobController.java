@@ -36,6 +36,11 @@ public class JobController {
       public ResponseEntity<String> applyJob(@PathVariable Long id, @RequestBody ApplicantDto applicantDto) throws Exception {
         return new ResponseEntity<>(jobService.applyJob(id,applicantDto),HttpStatus.OK);
     }
+    @GetMapping("api/common/postedBy/{id}")
+    public ResponseEntity<List<JobDto>>getJobsPostedBy(@PathVariable Long id)throws Exception
+    {
+        return new ResponseEntity<>(jobService.getPostedJobs(id),HttpStatus.OK);
+    }
 
 
 }

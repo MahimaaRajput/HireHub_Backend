@@ -12,4 +12,6 @@ public interface  JobService {
     JobDto getJobById(Long id)throws Exception;
 
     String applyJob(Long id, ApplicantDto applicantDto) throws Exception;
+
+    List<JobDto> getPostedJobs(Long id) throws Exception;
 }

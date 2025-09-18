@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Arrays.stream;
+
 @Service
 public class JobServiceImpl implements JobService{
     @Autowired
@@ -64,6 +66,17 @@ public class JobServiceImpl implements JobService{
         job.setApplicants(applicants);
         jobRepository.save(job);
         return "Applied successfully";
+    }
+
+    @Override
+    public List<JobDto> getPostedJobs(Long id) throws Exception {
+        List<Job> found = jobRepository.findByPostedBy(id);
+        if (found.isEmpty())
+        {
+            throw new Exception("job is not posted by this id");
+        }
+            return found.stream().map(Job::toDto).collect(Collectors.toList());
+
     }
 
 

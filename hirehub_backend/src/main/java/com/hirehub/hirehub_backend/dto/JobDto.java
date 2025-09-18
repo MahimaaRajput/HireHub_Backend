@@ -29,11 +29,12 @@ public class JobDto {
     private String description;
     private List<String> skillsRequired;
     private JobStatus jobStatus;
+    private Long postedBy;
 
     public Job toEntity()
     {
         return new Job(this.id,this.jobTitle,this.company,this.applicants!=null?this.applicants.stream().map(ApplicantDto::toEntity).toList():null,this.about,this.experience,
-                this.jobType,this.location,this.packageOffered,this.description,this.skillsRequired,this.jobStatus);
+                this.jobType,this.location,this.packageOffered,this.description,this.skillsRequired,this.jobStatus,this.postedBy);
     }
 
 }
