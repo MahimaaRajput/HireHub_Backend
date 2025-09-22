@@ -1,5 +1,6 @@
 package com.hirehub.hirehub_backend.controller;
 
+import com.hirehub.hirehub_backend.config.JwtProvider;
 import com.hirehub.hirehub_backend.dto.ApplicantDto;
 import com.hirehub.hirehub_backend.dto.JobDto;
 import com.hirehub.hirehub_backend.service.JobService;
@@ -19,9 +20,15 @@ public class JobController {
     private JobService jobService;
 
     @PostMapping("api/recruiter/post")
-    public ResponseEntity<JobDto>postJob(@RequestBody @Valid JobDto jobDto)
+    public ResponseEntity<JobDto>postJob(@RequestBody @Valid JobDto jobDto,@RequestHeader("Authorization") String jwt)
     {
-        return new ResponseEntity<>(jobService.postJob(jobDto), HttpStatus.CREATED);
+        Long recruiterId = JwtProvider.getUserIdFromToken(jwt);
+        if (recruiterId == null) {
+            throw new RuntimeException("Invalid token: userId is null");
+        }
+        jobDto.setPostedBy(recruiterId);
+        JobDto savedJob = jobService.postJob(jobDto);
+        return ResponseEntity.ok(savedJob);
     }
     @GetMapping("api/common/getall")
     public ResponseEntity<List<JobDto>> getAllJobs()

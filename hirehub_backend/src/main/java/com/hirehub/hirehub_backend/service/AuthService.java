@@ -35,19 +35,12 @@ public class AuthService {
         }
         User user= reqUser.toEntity();
         reqUser.setProfileId(profileService.createProfile(reqUser.getEmail()));
-//        User user = User.builder()
-//                .fullName(reqUser.getFullName())
-//                .email(reqUser.getEmail())
-//                .password(passwordEncoder.encode(reqUser.getPassword()))
-//                .role(reqUser.getRole())
-//                .gender(reqUser.getGender())
-//                .build();
         user.setPassword(passwordEncoder.encode(reqUser.getPassword()));
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
         Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(),
                 null,
                 List.of(new SimpleGrantedAuthority(user.getRole().name())));
-        String token = JwtProvider.generateToken(authentication);
+        String token = JwtProvider.generateToken(authentication, savedUser.getId());
         return AuthResponse.builder()
                 .token(token)
                 .message("register success")
@@ -74,7 +67,7 @@ public class AuthService {
             );
 
             //  Generate JWT token
-            String token = JwtProvider.generateToken(authentication);
+            String token = JwtProvider.generateToken(authentication,user.getId());
 
             //  Return token + user data
             return AuthResponse.builder()

@@ -1,11 +1,14 @@
 package com.hirehub.hirehub_backend.service;
 
+import com.hirehub.hirehub_backend.config.JwtProvider;
 import com.hirehub.hirehub_backend.dto.ApplicantDto;
 import com.hirehub.hirehub_backend.dto.JobDto;
 import com.hirehub.hirehub_backend.entity.Applicant;
 import com.hirehub.hirehub_backend.entity.Job;
+import com.hirehub.hirehub_backend.entity.User;
 import com.hirehub.hirehub_backend.enums.ApplicationStatus;
 import com.hirehub.hirehub_backend.repository.JobRepository;
+import com.hirehub.hirehub_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,8 @@ import static java.util.Arrays.stream;
 public class JobServiceImpl implements JobService{
     @Autowired
     private JobRepository jobRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public JobDto postJob(JobDto jobDto) {
@@ -36,7 +41,14 @@ public class JobServiceImpl implements JobService{
         job.setSkillsRequired(jobDto.getSkillsRequired());
         job.setJobStatus(jobDto.getJobStatus());
         job.setApplicants(new ArrayList<>());
+
+//        Long recruiterId = JwtProvider.getUserIdFromToken();
+        User recruiter = userRepository.findById(jobDto.getPostedBy())
+                .orElseThrow(() -> new RuntimeException("Recruiter not found"));
+        job.setPostedBy(recruiter.getId());
         Job savedJob = jobRepository.save(job);
+
+        // convert back to DTO
         return savedJob.toDto();
     }
 

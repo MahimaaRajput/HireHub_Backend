@@ -18,7 +18,7 @@ public class JwtProvider {
             Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
     // ✅ Generate JWT Token
-    public static String generateToken(Authentication auth) {
+    public static String generateToken(Authentication auth, Long userId) {
         String email = auth.getName();
         String role = "";
 
@@ -36,6 +36,7 @@ public class JwtProvider {
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 1 day expiry
                 .claim("email", email)
                 .claim("role", role)
+                .claim("userId",userId)
                 .signWith(key)
                 .compact();
     }
@@ -67,6 +68,17 @@ public class JwtProvider {
         return claims.get("role", String.class);
     }
 
+    public static Long getUserIdFromToken(String token) {
+        token = cleanToken(token);
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.get("userId", Long.class);
+    }
+
+
     // ✅ Helper: remove Bearer prefix + whitespace
     private static String cleanToken(String token) {
         if (token.startsWith("Bearer ")) {
@@ -77,59 +89,4 @@ public class JwtProvider {
 }
 
 
-//    public static final  SecretKey key= Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
-//    public static String generateToken(Authentication auth) {
-//        String email = auth.getName();
-//        String role = ""; // Default role blank
-//
-//        //  Extract 1st role from authorities
-//        Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
-//        if (!authorities.isEmpty()) {
-//            role = authorities.iterator().next().getAuthority();  // e.g., ROLE_RECRUITER or ROLE_JOBSEEKER
-//
-//        }
-//        System.out.println("Role being added to JWT: " + role);
-//
-//
-//        return Jwts.builder()
-//                .setIssuer("Mahima")
-//                .setIssuedAt(new Date())
-//                .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 1 day
-//                .claim("email", email)
-//                .claim("role", role)
-//                .signWith(key)
-//                .compact();
-//
-//    }
-//    public static String getEmailFromToken(String token)
-//    {
-////        token=token.substring(7); //remove "Bearer "
-//        try {
-//            token = token.trim()
-//                    .replaceAll("\\s+", ""); // remove ALL whitespace
-//
-//            Claims claims = Jwts.parserBuilder()
-//                    .setSigningKey(key)
-//                    .build()
-//                    .parseClaimsJws(token)
-//                    .getBody();
-//            return claims.get("email", String.class);
-//        }
-//        catch (Exception e) {
-//            e.printStackTrace();
-//            throw new RuntimeException("Failed to parse JWT: " + e.getMessage(), e);
-//        }
-//
-//
-//    }
-//    public static String getRoleFromToken(String token) {
-//        Claims claims = Jwts.parserBuilder()
-//                .setSigningKey(key)
-//                .build()
-//                .parseClaimsJws(token)
-//                .getBody();
-//
-//        return claims.get("role", String.class);
-//    }
 
-//}
