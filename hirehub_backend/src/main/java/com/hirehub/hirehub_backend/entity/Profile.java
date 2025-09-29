@@ -16,6 +16,7 @@ public class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
     private String email;
     private String jobTitle;
     private String location;
@@ -29,7 +30,7 @@ public class Profile {
 
     public ProfileDto toDto()
     {
-        return new ProfileDto(this.id,this.email,this.jobTitle,this.location,this.about,this.skills,this.experiences,this.certifications);
+        return new ProfileDto(this.id,this.name,this.email,this.jobTitle,this.location,this.about,this.skills,this.experiences,this.certifications);
     }
 
 }

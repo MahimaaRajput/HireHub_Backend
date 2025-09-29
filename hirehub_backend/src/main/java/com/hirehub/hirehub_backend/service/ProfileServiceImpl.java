@@ -6,6 +6,7 @@ import com.hirehub.hirehub_backend.repository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ProfileServiceImpl implements ProfileService {
@@ -43,6 +44,12 @@ public class ProfileServiceImpl implements ProfileService {
 
         profileRepository.save(existingProfile);
         return existingProfile.toDto();
+    }
+
+    @Override
+    public List<ProfileDto> getAllProfile() {
+
+        return profileRepository.findAll().stream().map((x)->x.toDto()).toList();
     }
 
 }
