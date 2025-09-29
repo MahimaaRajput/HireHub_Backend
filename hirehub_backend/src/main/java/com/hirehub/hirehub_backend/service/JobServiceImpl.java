@@ -2,6 +2,7 @@ package com.hirehub.hirehub_backend.service;
 
 import com.hirehub.hirehub_backend.config.JwtProvider;
 import com.hirehub.hirehub_backend.dto.ApplicantDto;
+import com.hirehub.hirehub_backend.dto.ApplicationDto;
 import com.hirehub.hirehub_backend.dto.JobDto;
 import com.hirehub.hirehub_backend.entity.Applicant;
 import com.hirehub.hirehub_backend.entity.Job;
@@ -90,6 +91,45 @@ public class JobServiceImpl implements JobService{
             return found.stream().map(Job::toDto).collect(Collectors.toList());
 
     }
+
+//    @Override
+//    public void changeAppStatus(ApplicationDto applicationDto) throws Exception {
+//        Job job=jobRepository.findById(applicationDto.getId()).orElseThrow(()->new Exception("job not found with this id"));
+//        List<Applicant> applicants=job.getApplicants().stream().map((x)->
+//        {
+//            if (applicationDto.getApplicantId().equals(x.getApplicantId())) {
+//                x.setApplicationStatus(applicationDto.getApplicationStatus());
+//                if (applicationDto.getApplicationStatus().equals(ApplicationStatus.INTERVIEWING))x.setInterviewTime(applicationDto.getInterviewTime());
+//
+//            }
+//            return x;
+//        }).collect(Collectors.toList());
+//        job.setApplicants(applicants);
+//        jobRepository.save(job);
+//    }
+
+    @Override
+    public void changeAppStatus(ApplicationDto applicationDto) throws Exception {
+        Job job = jobRepository.findById(applicationDto.getId())
+                .orElseThrow(() -> new Exception("Job not found with this id"));
+
+        Applicant targetApplicant = job.getApplicants().stream()
+                .filter(app -> applicationDto.getApplicantId().equals(app.getApplicantId()))
+                .findFirst()
+                .orElseThrow(() -> new Exception("Applicant not found for this job"));
+
+        // ✅ Update applicant fields
+        targetApplicant.setApplicationStatus(applicationDto.getApplicationStatus());
+
+        if (ApplicationStatus.INTERVIEWING.equals(applicationDto.getApplicationStatus())) {
+            targetApplicant.setInterviewTime(applicationDto.getInterviewTime());
+        }
+
+        // ✅ Save job with updated applicants
+        jobRepository.save(job);
+    }
+
+
 
 
 }

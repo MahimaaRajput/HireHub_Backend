@@ -26,13 +26,16 @@ public class Applicant {
     private byte[] resume;
     private String coverLetter;
     private LocalDateTime timestamp;
+
     @Enumerated(EnumType.STRING)
     private ApplicationStatus applicationStatus;
+    private LocalDateTime interviewTime;
+
     @ManyToOne
     @JoinColumn(name = "job_id")
     private Job job;
 
     public ApplicantDto toDto(){
-        return new ApplicantDto(this.applicantId,this.name,this.email,this.phoneNumber,this.resume!=null? Base64.getEncoder().encodeToString(this.resume):null,this.coverLetter,this.timestamp,this.applicationStatus);
+        return new ApplicantDto(this.applicantId,this.name,this.email,this.phoneNumber,this.resume!=null? Base64.getEncoder().encodeToString(this.resume):null,this.coverLetter,this.timestamp,this.applicationStatus, this.interviewTime);
     }
 }

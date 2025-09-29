@@ -1,6 +1,7 @@
 package com.hirehub.hirehub_backend.service;
 
 import com.hirehub.hirehub_backend.dto.ApplicantDto;
+import com.hirehub.hirehub_backend.dto.ApplicationDto;
 import com.hirehub.hirehub_backend.dto.JobDto;
 
 import java.util.List;
@@ -14,4 +15,7 @@ public interface  JobService {
     String applyJob(Long id, ApplicantDto applicantDto) throws Exception;
 
     List<JobDto> getPostedJobs(Long id) throws Exception;
+
+    void changeAppStatus(ApplicationDto applicationDto)throws Exception;
 }
+

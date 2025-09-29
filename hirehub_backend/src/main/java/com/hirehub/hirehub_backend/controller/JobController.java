@@ -2,7 +2,9 @@ package com.hirehub.hirehub_backend.controller;
 
 import com.hirehub.hirehub_backend.config.JwtProvider;
 import com.hirehub.hirehub_backend.dto.ApplicantDto;
+import com.hirehub.hirehub_backend.dto.ApplicationDto;
 import com.hirehub.hirehub_backend.dto.JobDto;
+import com.hirehub.hirehub_backend.dto.ResponseDto;
 import com.hirehub.hirehub_backend.service.JobService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,12 @@ public class JobController {
     public ResponseEntity<List<JobDto>>getJobsPostedBy(@PathVariable Long id)throws Exception
     {
         return new ResponseEntity<>(jobService.getPostedJobs(id),HttpStatus.OK);
+    }
+    @PostMapping("api/recruiter/changeAppStatus")
+    public ResponseEntity<ResponseDto>changeAppstatus(@RequestBody ApplicationDto applicationDto)throws Exception
+    {
+        jobService.changeAppStatus(applicationDto);
+        return new ResponseEntity<>(new ResponseDto("Application Status changed successfully!"),HttpStatus.OK);
     }
 
 

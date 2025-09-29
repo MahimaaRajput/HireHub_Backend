@@ -21,6 +21,7 @@ public class ApplicantDto {
     private String coverLetter;
     private LocalDateTime timestamp;
     private ApplicationStatus applicationStatus;
+    private LocalDateTime interviewTime;
 
     public Applicant toEntity(){
         Applicant applicant = new Applicant();
@@ -33,6 +34,7 @@ public class ApplicantDto {
         applicant.setCoverLetter(this.coverLetter);
         applicant.setTimestamp(this.timestamp);
         applicant.setApplicationStatus(this.applicationStatus);
+        applicant.setInterviewTime(this.interviewTime);
         // Job will be set separately in service layer
         return applicant;
     }
