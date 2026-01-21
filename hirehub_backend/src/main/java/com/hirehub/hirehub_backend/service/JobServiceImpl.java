@@ -1,6 +1,5 @@
 package com.hirehub.hirehub_backend.service;
 
-import com.hirehub.hirehub_backend.config.JwtProvider;
 import com.hirehub.hirehub_backend.dto.ApplicantDto;
 import com.hirehub.hirehub_backend.dto.ApplicationDto;
 import com.hirehub.hirehub_backend.dto.JobDto;
@@ -17,8 +16,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static java.util.Arrays.stream;
 
 @Service
 public class JobServiceImpl implements JobService{
@@ -92,22 +89,6 @@ public class JobServiceImpl implements JobService{
 
     }
 
-//    @Override
-//    public void changeAppStatus(ApplicationDto applicationDto) throws Exception {
-//        Job job=jobRepository.findById(applicationDto.getId()).orElseThrow(()->new Exception("job not found with this id"));
-//        List<Applicant> applicants=job.getApplicants().stream().map((x)->
-//        {
-//            if (applicationDto.getApplicantId().equals(x.getApplicantId())) {
-//                x.setApplicationStatus(applicationDto.getApplicationStatus());
-//                if (applicationDto.getApplicationStatus().equals(ApplicationStatus.INTERVIEWING))x.setInterviewTime(applicationDto.getInterviewTime());
-//
-//            }
-//            return x;
-//        }).collect(Collectors.toList());
-//        job.setApplicants(applicants);
-//        jobRepository.save(job);
-//    }
-
     @Override
     public void changeAppStatus(ApplicationDto applicationDto) throws Exception {
         Job job = jobRepository.findById(applicationDto.getId())
@@ -118,15 +99,24 @@ public class JobServiceImpl implements JobService{
                 .findFirst()
                 .orElseThrow(() -> new Exception("Applicant not found for this job"));
 
-        // ✅ Update applicant fields
+        //  Update applicant fields
         targetApplicant.setApplicationStatus(applicationDto.getApplicationStatus());
 
         if (ApplicationStatus.INTERVIEWING.equals(applicationDto.getApplicationStatus())) {
             targetApplicant.setInterviewTime(applicationDto.getInterviewTime());
         }
 
-        // ✅ Save job with updated applicants
+        //  Save job with updated applicants
         jobRepository.save(job);
+    }
+
+    @Override
+    public List<JobDto> searchJobsByKeyword(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return getAllJob();
+        }
+        List<Job> jobs = jobRepository.searchJobsByKeyword(keyword.trim());
+        return jobs.stream().map(Job::toDto).collect(Collectors.toList());
     }
 
 

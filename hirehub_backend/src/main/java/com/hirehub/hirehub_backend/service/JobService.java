@@ -17,5 +17,7 @@ public interface  JobService {
     List<JobDto> getPostedJobs(Long id) throws Exception;
 
     void changeAppStatus(ApplicationDto applicationDto)throws Exception;
+    
+    List<JobDto> searchJobsByKeyword(String keyword);
 }
 

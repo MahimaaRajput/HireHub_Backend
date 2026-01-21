@@ -57,5 +57,11 @@ public class JobController {
         return new ResponseEntity<>(new ResponseDto("Application Status changed successfully!"),HttpStatus.OK);
     }
 
+    @GetMapping("api/common/search")
+    public ResponseEntity<List<JobDto>> searchJobsByKeyword(@RequestParam(required = false) String keyword) {
+        List<JobDto> jobs = jobService.searchJobsByKeyword(keyword);
+        return new ResponseEntity<>(jobs, HttpStatus.OK);
+    }
+
 
 }
