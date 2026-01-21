@@ -23,5 +23,7 @@ public interface  JobService {
     
     List<JobDto> filterJobs(Long minSalary, Long maxSalary, String experience, 
                            String location, String jobType, LocalDateTime startDate, LocalDateTime endDate);
+    
+    List<JobDto> getAllJobsSorted(String sortBy);
 }
 

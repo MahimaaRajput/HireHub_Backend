@@ -134,6 +134,41 @@ public class JobServiceImpl implements JobService{
         return jobs.stream().map(Job::toDto).collect(Collectors.toList());
     }
 
+    @Override
+    public List<JobDto> getAllJobsSorted(String sortBy) {
+        List<Job> jobs;
+        
+        if (sortBy == null || sortBy.trim().isEmpty()) {
+            // Default: sort by date (newest first)
+            jobs = jobRepository.findAllByOrderByCreatedAtDesc();
+        } else {
+            switch (sortBy.toLowerCase()) {
+                case "date":
+                case "date_desc":
+                    jobs = jobRepository.findAllByOrderByCreatedAtDesc();
+                    break;
+                case "date_asc":
+                    jobs = jobRepository.findAllByOrderByCreatedAtAsc();
+                    break;
+                case "salary":
+                case "salary_desc":
+                    jobs = jobRepository.findAllByOrderByPackageOfferedDesc();
+                    break;
+                case "salary_asc":
+                    jobs = jobRepository.findAllByOrderByPackageOfferedAsc();
+                    break;
+                case "relevance":
+                default:
+                    // For relevance, we'll sort by date (newest first) as default
+                    // In a real scenario, relevance would be calculated based on search terms, profile match, etc.
+                    jobs = jobRepository.findAllByOrderByCreatedAtDesc();
+                    break;
+            }
+        }
+        
+        return jobs.stream().map(Job::toDto).collect(Collectors.toList());
+    }
+
 
 
 

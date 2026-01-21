@@ -34,8 +34,11 @@ public class JobController {
         return ResponseEntity.ok(savedJob);
     }
     @GetMapping("api/common/getall")
-    public ResponseEntity<List<JobDto>> getAllJobs()
+    public ResponseEntity<List<JobDto>> getAllJobs(@RequestParam(required = false) String sortBy)
     {
+        if (sortBy != null && !sortBy.trim().isEmpty()) {
+            return new ResponseEntity<>(jobService.getAllJobsSorted(sortBy), HttpStatus.OK);
+        }
         return new ResponseEntity<>(jobService.getAllJob(),HttpStatus.OK);
     }
     @GetMapping("api/common/getJobById/{id}")

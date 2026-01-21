@@ -38,4 +38,10 @@ public interface JobRepository extends JpaRepository<Job,Long> {
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate
     );
+    
+    // Find all jobs sorted by different criteria
+    List<Job> findAllByOrderByCreatedAtDesc();
+    List<Job> findAllByOrderByCreatedAtAsc();
+    List<Job> findAllByOrderByPackageOfferedDesc();
+    List<Job> findAllByOrderByPackageOfferedAsc();
 }
