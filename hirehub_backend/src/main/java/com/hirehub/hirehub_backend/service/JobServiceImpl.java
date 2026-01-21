@@ -119,6 +119,21 @@ public class JobServiceImpl implements JobService{
         return jobs.stream().map(Job::toDto).collect(Collectors.toList());
     }
 
+    @Override
+    public List<JobDto> filterJobs(Long minSalary, Long maxSalary, String experience, 
+                                   String location, String jobType, LocalDateTime startDate, LocalDateTime endDate) {
+        List<Job> jobs = jobRepository.filterJobs(
+                minSalary, 
+                maxSalary, 
+                experience != null ? experience.trim() : null,
+                location != null ? location.trim() : null,
+                jobType != null ? jobType.trim() : null,
+                startDate,
+                endDate
+        );
+        return jobs.stream().map(Job::toDto).collect(Collectors.toList());
+    }
+
 
 
 

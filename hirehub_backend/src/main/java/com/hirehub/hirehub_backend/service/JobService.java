@@ -4,6 +4,7 @@ import com.hirehub.hirehub_backend.dto.ApplicantDto;
 import com.hirehub.hirehub_backend.dto.ApplicationDto;
 import com.hirehub.hirehub_backend.dto.JobDto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface  JobService {
@@ -19,5 +20,8 @@ public interface  JobService {
     void changeAppStatus(ApplicationDto applicationDto)throws Exception;
     
     List<JobDto> searchJobsByKeyword(String keyword);
+    
+    List<JobDto> filterJobs(Long minSalary, Long maxSalary, String experience, 
+                           String location, String jobType, LocalDateTime startDate, LocalDateTime endDate);
 }
 

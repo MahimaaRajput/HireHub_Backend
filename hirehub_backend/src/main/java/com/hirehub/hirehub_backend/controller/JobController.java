@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -60,6 +61,48 @@ public class JobController {
     @GetMapping("api/common/search")
     public ResponseEntity<List<JobDto>> searchJobsByKeyword(@RequestParam(required = false) String keyword) {
         List<JobDto> jobs = jobService.searchJobsByKeyword(keyword);
+        return new ResponseEntity<>(jobs, HttpStatus.OK);
+    }
+
+    @GetMapping("api/common/filter")
+    public ResponseEntity<List<JobDto>> filterJobs(
+            @RequestParam(required = false) Long minSalary,
+            @RequestParam(required = false) Long maxSalary,
+            @RequestParam(required = false) String experience,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String jobType,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate) {
+        
+        LocalDateTime startDateTime = null;
+        LocalDateTime endDateTime = null;
+        
+        // Parse date strings if provided (format: yyyy-MM-dd or yyyy-MM-ddTHH:mm:ss)
+        if (startDate != null && !startDate.trim().isEmpty()) {
+            try {
+                if (startDate.length() == 10) {
+                    startDateTime = LocalDateTime.parse(startDate + "T00:00:00");
+                } else {
+                    startDateTime = LocalDateTime.parse(startDate);
+                }
+            } catch (Exception e) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+        }
+        
+        if (endDate != null && !endDate.trim().isEmpty()) {
+            try {
+                if (endDate.length() == 10) {
+                    endDateTime = LocalDateTime.parse(endDate + "T23:59:59");
+                } else {
+                    endDateTime = LocalDateTime.parse(endDate);
+                }
+            } catch (Exception e) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+        }
+        
+        List<JobDto> jobs = jobService.filterJobs(minSalary, maxSalary, experience, location, jobType, startDateTime, endDateTime);
         return new ResponseEntity<>(jobs, HttpStatus.OK);
     }
 
