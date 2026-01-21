@@ -38,6 +38,7 @@ public class JobServiceImpl implements JobService{
         job.setDescription(jobDto.getDescription());
         job.setSkillsRequired(jobDto.getSkillsRequired());
         job.setJobStatus(jobDto.getJobStatus());
+        job.setCategory(jobDto.getCategory());
         job.setApplicants(new ArrayList<>());
 
 //        Long recruiterId = JwtProvider.getUserIdFromToken();
@@ -121,16 +122,26 @@ public class JobServiceImpl implements JobService{
 
     @Override
     public List<JobDto> filterJobs(Long minSalary, Long maxSalary, String experience, 
-                                   String location, String jobType, LocalDateTime startDate, LocalDateTime endDate) {
+                                   String location, String jobType, String category, LocalDateTime startDate, LocalDateTime endDate) {
         List<Job> jobs = jobRepository.filterJobs(
                 minSalary, 
                 maxSalary, 
                 experience != null ? experience.trim() : null,
                 location != null ? location.trim() : null,
                 jobType != null ? jobType.trim() : null,
+                category != null ? category.trim() : null,
                 startDate,
                 endDate
         );
+        return jobs.stream().map(Job::toDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<JobDto> getJobsByCategory(String category) {
+        if (category == null || category.trim().isEmpty()) {
+            return getAllJob();
+        }
+        List<Job> jobs = jobRepository.findByCategoryIgnoreCase(category.trim());
         return jobs.stream().map(Job::toDto).collect(Collectors.toList());
     }
 

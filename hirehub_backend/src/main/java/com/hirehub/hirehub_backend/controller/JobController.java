@@ -74,6 +74,7 @@ public class JobController {
             @RequestParam(required = false) String experience,
             @RequestParam(required = false) String location,
             @RequestParam(required = false) String jobType,
+            @RequestParam(required = false) String category,
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
         
@@ -105,7 +106,13 @@ public class JobController {
             }
         }
         
-        List<JobDto> jobs = jobService.filterJobs(minSalary, maxSalary, experience, location, jobType, startDateTime, endDateTime);
+        List<JobDto> jobs = jobService.filterJobs(minSalary, maxSalary, experience, location, jobType, category, startDateTime, endDateTime);
+        return new ResponseEntity<>(jobs, HttpStatus.OK);
+    }
+
+    @GetMapping("api/common/category/{category}")
+    public ResponseEntity<List<JobDto>> getJobsByCategory(@PathVariable String category) {
+        List<JobDto> jobs = jobService.getJobsByCategory(category);
         return new ResponseEntity<>(jobs, HttpStatus.OK);
     }
 

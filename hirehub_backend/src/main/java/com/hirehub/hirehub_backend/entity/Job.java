@@ -35,6 +35,7 @@ public class Job {
     @Enumerated(EnumType.STRING)
     private JobStatus jobStatus;
     private Long postedBy;
+    private String category; // Industry/Category of the job (e.g., IT, Finance, Healthcare, etc.)
     
     @CreationTimestamp
     @Column(updatable = false)
@@ -43,7 +44,7 @@ public class Job {
     public JobDto toDto()
     {
         return new JobDto(this.id,this.jobTitle,this.company,this.applicants!=null?this.applicants.stream().map(Applicant::toDto).toList():null,this.about,this.experience,
-                this.jobType,this.location,this.packageOffered,this.description,this.skillsRequired,this.jobStatus,this.postedBy);
+                this.jobType,this.location,this.packageOffered,this.description,this.skillsRequired,this.jobStatus,this.postedBy,this.category);
     }
 
 }

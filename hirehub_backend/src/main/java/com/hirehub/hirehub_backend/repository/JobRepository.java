@@ -26,6 +26,7 @@ public interface JobRepository extends JpaRepository<Job,Long> {
            "(:experience IS NULL OR LOWER(j.experience) LIKE LOWER(CONCAT('%', :experience, '%'))) AND " +
            "(:location IS NULL OR LOWER(j.location) LIKE LOWER(CONCAT('%', :location, '%'))) AND " +
            "(:jobType IS NULL OR LOWER(j.jobType) LIKE LOWER(CONCAT('%', :jobType, '%'))) AND " +
+           "(:category IS NULL OR LOWER(j.category) LIKE LOWER(CONCAT('%', :category, '%'))) AND " +
            "(:startDate IS NULL OR j.createdAt >= :startDate) AND " +
            "(:endDate IS NULL OR j.createdAt <= :endDate) AND " +
            "j.jobStatus = 'OPEN'")
@@ -35,9 +36,13 @@ public interface JobRepository extends JpaRepository<Job,Long> {
             @Param("experience") String experience,
             @Param("location") String location,
             @Param("jobType") String jobType,
+            @Param("category") String category,
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate
     );
+    
+    // Find jobs by category
+    List<Job> findByCategoryIgnoreCase(String category);
     
     // Find all jobs sorted by different criteria
     List<Job> findAllByOrderByCreatedAtDesc();
