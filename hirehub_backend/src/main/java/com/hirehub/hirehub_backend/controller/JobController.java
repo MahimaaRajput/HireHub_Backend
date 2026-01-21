@@ -116,5 +116,11 @@ public class JobController {
         return new ResponseEntity<>(jobs, HttpStatus.OK);
     }
 
+    @GetMapping("api/common/company/{company}")
+    public ResponseEntity<List<JobDto>> getJobsByCompany(@PathVariable String company) {
+        List<JobDto> jobs = jobService.getJobsByCompany(company);
+        return new ResponseEntity<>(jobs, HttpStatus.OK);
+    }
+
 
 }

@@ -44,6 +44,12 @@ public interface JobRepository extends JpaRepository<Job,Long> {
     // Find jobs by category
     List<Job> findByCategoryIgnoreCase(String category);
     
+    // Find jobs by company name (case-insensitive)
+    List<Job> findByCompanyIgnoreCase(String company);
+    
+    // Find jobs by company name containing (case-insensitive)
+    List<Job> findByCompanyContainingIgnoreCase(String company);
+    
     // Find all jobs sorted by different criteria
     List<Job> findAllByOrderByCreatedAtDesc();
     List<Job> findAllByOrderByCreatedAtAsc();

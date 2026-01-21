@@ -27,5 +27,7 @@ public interface  JobService {
     List<JobDto> getJobsByCategory(String category);
     
     List<JobDto> getAllJobsSorted(String sortBy);
+    
+    List<JobDto> getJobsByCompany(String company);
 }
 

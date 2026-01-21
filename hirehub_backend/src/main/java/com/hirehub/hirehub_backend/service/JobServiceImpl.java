@@ -146,6 +146,16 @@ public class JobServiceImpl implements JobService{
     }
 
     @Override
+    public List<JobDto> getJobsByCompany(String company) {
+        if (company == null || company.trim().isEmpty()) {
+            return getAllJob();
+        }
+        // Use contains search for more flexible matching
+        List<Job> jobs = jobRepository.findByCompanyContainingIgnoreCase(company.trim());
+        return jobs.stream().map(Job::toDto).collect(Collectors.toList());
+    }
+
+    @Override
     public List<JobDto> getAllJobsSorted(String sortBy) {
         List<Job> jobs;
         
