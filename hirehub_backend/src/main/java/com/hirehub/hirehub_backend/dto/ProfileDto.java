@@ -4,6 +4,7 @@ import com.hirehub.hirehub_backend.entity.Certification;
 import com.hirehub.hirehub_backend.entity.Education;
 import com.hirehub.hirehub_backend.entity.Experience;
 import com.hirehub.hirehub_backend.entity.Profile;
+import com.hirehub.hirehub_backend.entity.Project;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class ProfileDto {
     private List<Experience> experiences;
     private List<Certification> certifications;
     private List<Education> educations;
+    private List<Project> projects;
 
     public Profile toEntity()
     {
@@ -41,6 +43,7 @@ public class ProfileDto {
         profile.setExperiences(this.experiences);
         profile.setCertifications(this.certifications);
         profile.setEducations(this.educations);
+        profile.setProjects(this.projects);
         return profile;
     }
 }

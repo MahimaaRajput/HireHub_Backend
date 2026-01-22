@@ -31,10 +31,12 @@ public class Profile {
     private List<Certification> certifications;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Education> educations;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Project> projects;
 
     public ProfileDto toDto()
     {
-        return new ProfileDto(this.id,this.name,this.email,this.jobTitle,this.location,this.about,this.photoUrl,this.resumeUrl,this.skills,this.experiences,this.certifications,this.educations);
+        return new ProfileDto(this.id,this.name,this.email,this.jobTitle,this.location,this.about,this.photoUrl,this.resumeUrl,this.skills,this.experiences,this.certifications,this.educations,this.projects);
     }
 
 }
