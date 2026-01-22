@@ -21,6 +21,7 @@ public class Profile {
     private String jobTitle;
     private String location;
     private String about;
+    private String photoUrl; // URL or path to profile photo
     @ElementCollection
     private List<String>skills;
     @OneToMany(cascade = CascadeType.ALL)
@@ -30,7 +31,7 @@ public class Profile {
 
     public ProfileDto toDto()
     {
-        return new ProfileDto(this.id,this.name,this.email,this.jobTitle,this.location,this.about,this.skills,this.experiences,this.certifications);
+        return new ProfileDto(this.id,this.name,this.email,this.jobTitle,this.location,this.about,this.photoUrl,this.skills,this.experiences,this.certifications);
     }
 
 }

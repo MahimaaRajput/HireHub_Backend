@@ -18,12 +18,24 @@ public class ProfileDto {
     private String jobTitle;
     private String location;
     private String about;
+    private String photoUrl; // URL or path to profile photo
     private List<String> skills;
     private List<Experience> experiences;
     private List<Certification> certifications;
 
     public Profile toEntity()
     {
-        return new Profile(this.id,this.name,this.email,this.jobTitle,this.location,this.about,this.skills,this.experiences,this.certifications);
+        Profile profile = new Profile();
+        profile.setId(this.id);
+        profile.setName(this.name);
+        profile.setEmail(this.email);
+        profile.setJobTitle(this.jobTitle);
+        profile.setLocation(this.location);
+        profile.setAbout(this.about);
+        profile.setPhotoUrl(this.photoUrl);
+        profile.setSkills(this.skills);
+        profile.setExperiences(this.experiences);
+        profile.setCertifications(this.certifications);
+        return profile;
     }
 }
