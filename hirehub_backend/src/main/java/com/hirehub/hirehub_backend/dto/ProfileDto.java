@@ -24,8 +24,10 @@ public class ProfileDto {
     private String resumeUrl; // URL or path to resume file (PDF/DOCX)
     private List<String> skills;
     private List<String> languages; // Languages known by the user
+    private List<String> preferredLocations; // Preferred job locations
     private Long currentSalary; // Current salary
     private Long expectedSalary; // Expected/desired salary
+    private Integer noticePeriod; // Notice period in days
     private List<Experience> experiences;
     private List<Certification> certifications;
     private List<Education> educations;
@@ -44,8 +46,10 @@ public class ProfileDto {
         profile.setResumeUrl(this.resumeUrl);
         profile.setSkills(this.skills);
         profile.setLanguages(this.languages);
+        profile.setPreferredLocations(this.preferredLocations);
         profile.setCurrentSalary(this.currentSalary);
         profile.setExpectedSalary(this.expectedSalary);
+        profile.setNoticePeriod(this.noticePeriod);
         profile.setExperiences(this.experiences);
         profile.setCertifications(this.certifications);
         profile.setEducations(this.educations);

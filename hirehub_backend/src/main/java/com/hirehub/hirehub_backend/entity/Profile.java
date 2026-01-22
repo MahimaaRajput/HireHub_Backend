@@ -27,8 +27,11 @@ public class Profile {
     private List<String>skills;
     @ElementCollection
     private List<String> languages; // Languages known by the user
+    @ElementCollection
+    private List<String> preferredLocations; // Preferred job locations
     private Long currentSalary; // Current salary
     private Long expectedSalary; // Expected/desired salary
+    private Integer noticePeriod; // Notice period in days
     @OneToMany(cascade = CascadeType.ALL)
     private List<Experience> experiences;
     @OneToMany(cascade = CascadeType.ALL)
@@ -40,7 +43,7 @@ public class Profile {
 
     public ProfileDto toDto()
     {
-        return new ProfileDto(this.id,this.name,this.email,this.jobTitle,this.location,this.about,this.photoUrl,this.resumeUrl,this.skills,this.languages,this.currentSalary,this.expectedSalary,this.experiences,this.certifications,this.educations,this.projects);
+        return new ProfileDto(this.id,this.name,this.email,this.jobTitle,this.location,this.about,this.photoUrl,this.resumeUrl,this.skills,this.languages,this.preferredLocations,this.currentSalary,this.expectedSalary,this.noticePeriod,this.experiences,this.certifications,this.educations,this.projects);
     }
 
 }

@@ -19,6 +19,7 @@ public class ProfileServiceImpl implements ProfileService {
         profile.setEmail(email);
         profile.setSkills(new ArrayList<>());
         profile.setLanguages(new ArrayList<>());
+        profile.setPreferredLocations(new ArrayList<>());
         profile.setExperiences(new ArrayList<>());
         profile.setCertifications(new ArrayList<>());
         profile.setEducations(new ArrayList<>());
@@ -45,8 +46,10 @@ public class ProfileServiceImpl implements ProfileService {
         existingProfile.setResumeUrl(profileDto.getResumeUrl());
         existingProfile.setSkills(profileDto.getSkills());
         existingProfile.setLanguages(profileDto.getLanguages());
+        existingProfile.setPreferredLocations(profileDto.getPreferredLocations());
         existingProfile.setCurrentSalary(profileDto.getCurrentSalary());
         existingProfile.setExpectedSalary(profileDto.getExpectedSalary());
+        existingProfile.setNoticePeriod(profileDto.getNoticePeriod());
         existingProfile.setExperiences(profileDto.getExperiences());
         existingProfile.setCertifications(profileDto.getCertifications());
         existingProfile.setEducations(profileDto.getEducations());
