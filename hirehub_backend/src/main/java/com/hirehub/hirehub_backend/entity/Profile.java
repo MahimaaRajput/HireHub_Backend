@@ -22,6 +22,7 @@ public class Profile {
     private String location;
     private String about;
     private String photoUrl; // URL or path to profile photo
+    private String resumeUrl; // URL or path to resume file (PDF/DOCX)
     @ElementCollection
     private List<String>skills;
     @OneToMany(cascade = CascadeType.ALL)
@@ -33,7 +34,7 @@ public class Profile {
 
     public ProfileDto toDto()
     {
-        return new ProfileDto(this.id,this.name,this.email,this.jobTitle,this.location,this.about,this.photoUrl,this.skills,this.experiences,this.certifications,this.educations);
+        return new ProfileDto(this.id,this.name,this.email,this.jobTitle,this.location,this.about,this.photoUrl,this.resumeUrl,this.skills,this.experiences,this.certifications,this.educations);
     }
 
 }

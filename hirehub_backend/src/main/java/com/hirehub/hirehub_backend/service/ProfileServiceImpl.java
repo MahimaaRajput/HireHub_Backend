@@ -40,6 +40,7 @@ public class ProfileServiceImpl implements ProfileService {
         existingProfile.setLocation(profileDto.getLocation());
         existingProfile.setAbout(profileDto.getAbout());
         existingProfile.setPhotoUrl(profileDto.getPhotoUrl());
+        existingProfile.setResumeUrl(profileDto.getResumeUrl());
         existingProfile.setSkills(profileDto.getSkills());
         existingProfile.setExperiences(profileDto.getExperiences());
         existingProfile.setCertifications(profileDto.getCertifications());
