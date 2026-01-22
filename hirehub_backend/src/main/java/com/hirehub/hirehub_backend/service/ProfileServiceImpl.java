@@ -21,6 +21,7 @@ public class ProfileServiceImpl implements ProfileService {
         profile.setLanguages(new ArrayList<>());
         profile.setPreferredLocations(new ArrayList<>());
         profile.setExperiences(new ArrayList<>());
+        profile.setVisibility(com.hirehub.hirehub_backend.enums.ProfileVisibility.PUBLIC); // Default to PUBLIC
         profile.setCertifications(new ArrayList<>());
         profile.setEducations(new ArrayList<>());
         profile.setProjects(new ArrayList<>());
@@ -50,6 +51,7 @@ public class ProfileServiceImpl implements ProfileService {
         existingProfile.setCurrentSalary(profileDto.getCurrentSalary());
         existingProfile.setExpectedSalary(profileDto.getExpectedSalary());
         existingProfile.setNoticePeriod(profileDto.getNoticePeriod());
+        existingProfile.setVisibility(profileDto.getVisibility());
         existingProfile.setExperiences(profileDto.getExperiences());
         existingProfile.setCertifications(profileDto.getCertifications());
         existingProfile.setEducations(profileDto.getEducations());

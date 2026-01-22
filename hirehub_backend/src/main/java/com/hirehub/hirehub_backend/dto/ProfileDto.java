@@ -5,6 +5,7 @@ import com.hirehub.hirehub_backend.entity.Education;
 import com.hirehub.hirehub_backend.entity.Experience;
 import com.hirehub.hirehub_backend.entity.Profile;
 import com.hirehub.hirehub_backend.entity.Project;
+import com.hirehub.hirehub_backend.enums.ProfileVisibility;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,7 @@ public class ProfileDto {
     private Long currentSalary; // Current salary
     private Long expectedSalary; // Expected/desired salary
     private Integer noticePeriod; // Notice period in days
+    private ProfileVisibility visibility; // Profile visibility setting (PUBLIC/PRIVATE)
     private List<Experience> experiences;
     private List<Certification> certifications;
     private List<Education> educations;
@@ -50,6 +52,7 @@ public class ProfileDto {
         profile.setCurrentSalary(this.currentSalary);
         profile.setExpectedSalary(this.expectedSalary);
         profile.setNoticePeriod(this.noticePeriod);
+        profile.setVisibility(this.visibility);
         profile.setExperiences(this.experiences);
         profile.setCertifications(this.certifications);
         profile.setEducations(this.educations);

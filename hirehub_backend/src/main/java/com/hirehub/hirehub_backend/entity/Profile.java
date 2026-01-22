@@ -1,6 +1,7 @@
 package com.hirehub.hirehub_backend.entity;
 
 import com.hirehub.hirehub_backend.dto.ProfileDto;
+import com.hirehub.hirehub_backend.enums.ProfileVisibility;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,6 +33,8 @@ public class Profile {
     private Long currentSalary; // Current salary
     private Long expectedSalary; // Expected/desired salary
     private Integer noticePeriod; // Notice period in days
+    @Enumerated(EnumType.STRING)
+    private ProfileVisibility visibility; // Profile visibility setting (PUBLIC/PRIVATE)
     @OneToMany(cascade = CascadeType.ALL)
     private List<Experience> experiences;
     @OneToMany(cascade = CascadeType.ALL)
@@ -43,7 +46,7 @@ public class Profile {
 
     public ProfileDto toDto()
     {
-        return new ProfileDto(this.id,this.name,this.email,this.jobTitle,this.location,this.about,this.photoUrl,this.resumeUrl,this.skills,this.languages,this.preferredLocations,this.currentSalary,this.expectedSalary,this.noticePeriod,this.experiences,this.certifications,this.educations,this.projects);
+        return new ProfileDto(this.id,this.name,this.email,this.jobTitle,this.location,this.about,this.photoUrl,this.resumeUrl,this.skills,this.languages,this.preferredLocations,this.currentSalary,this.expectedSalary,this.noticePeriod,this.visibility,this.experiences,this.certifications,this.educations,this.projects);
     }
 
 }
