@@ -23,6 +23,7 @@ public class ProfileDto {
     private String photoUrl; // URL or path to profile photo
     private String resumeUrl; // URL or path to resume file (PDF/DOCX)
     private List<String> skills;
+    private List<String> languages; // Languages known by the user
     private List<Experience> experiences;
     private List<Certification> certifications;
     private List<Education> educations;
@@ -40,6 +41,7 @@ public class ProfileDto {
         profile.setPhotoUrl(this.photoUrl);
         profile.setResumeUrl(this.resumeUrl);
         profile.setSkills(this.skills);
+        profile.setLanguages(this.languages);
         profile.setExperiences(this.experiences);
         profile.setCertifications(this.certifications);
         profile.setEducations(this.educations);
