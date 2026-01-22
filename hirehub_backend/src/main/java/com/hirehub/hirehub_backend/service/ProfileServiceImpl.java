@@ -45,6 +45,8 @@ public class ProfileServiceImpl implements ProfileService {
         existingProfile.setResumeUrl(profileDto.getResumeUrl());
         existingProfile.setSkills(profileDto.getSkills());
         existingProfile.setLanguages(profileDto.getLanguages());
+        existingProfile.setCurrentSalary(profileDto.getCurrentSalary());
+        existingProfile.setExpectedSalary(profileDto.getExpectedSalary());
         existingProfile.setExperiences(profileDto.getExperiences());
         existingProfile.setCertifications(profileDto.getCertifications());
         existingProfile.setEducations(profileDto.getEducations());
