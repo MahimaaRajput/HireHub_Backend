@@ -28,10 +28,12 @@ public class Profile {
     private List<Experience> experiences;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Certification> certifications;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Education> educations;
 
     public ProfileDto toDto()
     {
-        return new ProfileDto(this.id,this.name,this.email,this.jobTitle,this.location,this.about,this.photoUrl,this.skills,this.experiences,this.certifications);
+        return new ProfileDto(this.id,this.name,this.email,this.jobTitle,this.location,this.about,this.photoUrl,this.skills,this.experiences,this.certifications,this.educations);
     }
 
 }

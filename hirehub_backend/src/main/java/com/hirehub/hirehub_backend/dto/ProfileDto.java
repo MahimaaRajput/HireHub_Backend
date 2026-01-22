@@ -1,6 +1,7 @@
 package com.hirehub.hirehub_backend.dto;
 
 import com.hirehub.hirehub_backend.entity.Certification;
+import com.hirehub.hirehub_backend.entity.Education;
 import com.hirehub.hirehub_backend.entity.Experience;
 import com.hirehub.hirehub_backend.entity.Profile;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,7 @@ public class ProfileDto {
     private List<String> skills;
     private List<Experience> experiences;
     private List<Certification> certifications;
+    private List<Education> educations;
 
     public Profile toEntity()
     {
@@ -36,6 +38,7 @@ public class ProfileDto {
         profile.setSkills(this.skills);
         profile.setExperiences(this.experiences);
         profile.setCertifications(this.certifications);
+        profile.setEducations(this.educations);
         return profile;
     }
 }

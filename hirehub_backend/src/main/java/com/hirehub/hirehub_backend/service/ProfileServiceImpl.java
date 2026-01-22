@@ -20,6 +20,7 @@ public class ProfileServiceImpl implements ProfileService {
         profile.setSkills(new ArrayList<>());
         profile.setExperiences(new ArrayList<>());
         profile.setCertifications(new ArrayList<>());
+        profile.setEducations(new ArrayList<>());
         profileRepository.save(profile);
         return profile.getId();
     }
@@ -42,6 +43,7 @@ public class ProfileServiceImpl implements ProfileService {
         existingProfile.setSkills(profileDto.getSkills());
         existingProfile.setExperiences(profileDto.getExperiences());
         existingProfile.setCertifications(profileDto.getCertifications());
+        existingProfile.setEducations(profileDto.getEducations());
 
         profileRepository.save(existingProfile);
         return existingProfile.toDto();
