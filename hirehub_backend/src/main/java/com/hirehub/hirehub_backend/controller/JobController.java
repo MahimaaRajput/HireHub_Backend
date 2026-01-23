@@ -3,6 +3,7 @@ package com.hirehub.hirehub_backend.controller;
 import com.hirehub.hirehub_backend.config.JwtProvider;
 import com.hirehub.hirehub_backend.dto.ApplicantDto;
 import com.hirehub.hirehub_backend.dto.ApplicationDto;
+import com.hirehub.hirehub_backend.dto.BulkApplicationActionDto;
 import com.hirehub.hirehub_backend.dto.JobDto;
 import com.hirehub.hirehub_backend.dto.ResponseDto;
 import com.hirehub.hirehub_backend.service.JobService;
@@ -126,6 +127,12 @@ public class JobController {
     public ResponseEntity<List<ApplicantDto>> getApplicantsForJob(@PathVariable Long jobId) throws Exception {
         List<ApplicantDto> applicants = jobService.getApplicantsForJob(jobId);
         return new ResponseEntity<>(applicants, HttpStatus.OK);
+    }
+
+    @PostMapping("api/recruiter/bulk-update-applications")
+    public ResponseEntity<ResponseDto> bulkUpdateApplicationStatus(@RequestBody BulkApplicationActionDto bulkAction) throws Exception {
+        jobService.bulkUpdateApplicationStatus(bulkAction);
+        return new ResponseEntity<>(new ResponseDto("Application statuses updated successfully for " + bulkAction.getApplicantIds().size() + " applicants"), HttpStatus.OK);
     }
 
 

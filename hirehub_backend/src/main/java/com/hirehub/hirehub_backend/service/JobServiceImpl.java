@@ -204,6 +204,35 @@ public class JobServiceImpl implements JobService{
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void bulkUpdateApplicationStatus(com.hirehub.hirehub_backend.dto.BulkApplicationActionDto bulkAction) throws Exception {
+        Job job = jobRepository.findById(bulkAction.getJobId())
+                .orElseThrow(() -> new Exception("Job not found"));
+        
+        if (job.getApplicants() == null || job.getApplicants().isEmpty()) {
+            throw new Exception("No applicants found for this job");
+        }
+        
+        // Update status for all specified applicants
+        int updatedCount = 0;
+        for (Applicant applicant : job.getApplicants()) {
+            if (bulkAction.getApplicantIds().contains(applicant.getApplicantId())) {
+                applicant.setApplicationStatus(bulkAction.getNewStatus());
+                
+                // If status is INTERVIEWING, you might want to set interview time
+                // For now, we'll leave it as is (can be set individually later)
+                
+                updatedCount++;
+            }
+        }
+        
+        if (updatedCount == 0) {
+            throw new Exception("No matching applicants found to update");
+        }
+        
+        jobRepository.save(job);
+    }
+
 
 
 
