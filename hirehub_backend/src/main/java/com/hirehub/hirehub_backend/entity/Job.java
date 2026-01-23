@@ -21,7 +21,10 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String jobTitle;
-    private String company;
+    private String company; // Keep for backward compatibility
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company companyEntity; // Reference to Company entity
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Applicant> applicants;
     private String about;
