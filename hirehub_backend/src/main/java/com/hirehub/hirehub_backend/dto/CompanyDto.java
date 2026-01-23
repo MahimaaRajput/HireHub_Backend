@@ -1,6 +1,7 @@
 package com.hirehub.hirehub_backend.dto;
 
 import com.hirehub.hirehub_backend.entity.Company;
+import com.hirehub.hirehub_backend.enums.VerificationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ public class CompanyDto {
     private String website;
     private String size;
     private String industry;
+    private VerificationStatus verificationStatus;
     private Long ownerId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -31,6 +33,7 @@ public class CompanyDto {
         company.setWebsite(this.website);
         company.setSize(this.size);
         company.setIndustry(this.industry);
+        company.setVerificationStatus(this.verificationStatus);
         // owner will be set separately in service
         return company;
     }

@@ -1,6 +1,7 @@
 package com.hirehub.hirehub_backend.entity;
 
 import com.hirehub.hirehub_backend.dto.CompanyDto;
+import com.hirehub.hirehub_backend.enums.VerificationStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,6 +30,9 @@ public class Company {
     private String size; // Company size (e.g., "1-50", "51-200", "201-500", "500+")
     private String industry; // Industry sector (e.g., "IT", "Finance", "Healthcare")
     
+    @Enumerated(EnumType.STRING)
+    private VerificationStatus verificationStatus; // Company verification status
+    
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Job> jobs; // Jobs posted by this company
     
@@ -52,6 +56,7 @@ public class Company {
             this.website,
             this.size,
             this.industry,
+            this.verificationStatus,
             this.owner != null ? this.owner.getId() : null,
             this.createdAt,
             this.updatedAt
