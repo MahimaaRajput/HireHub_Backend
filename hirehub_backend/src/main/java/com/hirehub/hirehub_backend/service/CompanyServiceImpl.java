@@ -2,14 +2,17 @@ package com.hirehub.hirehub_backend.service;
 
 import com.hirehub.hirehub_backend.dto.CompanyDashboardDto;
 import com.hirehub.hirehub_backend.dto.CompanyDto;
+import com.hirehub.hirehub_backend.dto.CompanyReviewDto;
 import com.hirehub.hirehub_backend.dto.JobDto;
 import com.hirehub.hirehub_backend.entity.Company;
+import com.hirehub.hirehub_backend.entity.CompanyReview;
 import com.hirehub.hirehub_backend.entity.Job;
 import com.hirehub.hirehub_backend.entity.User;
 import com.hirehub.hirehub_backend.enums.ApplicationStatus;
 import com.hirehub.hirehub_backend.enums.JobStatus;
 import com.hirehub.hirehub_backend.enums.VerificationStatus;
 import com.hirehub.hirehub_backend.repository.CompanyRepository;
+import com.hirehub.hirehub_backend.repository.CompanyReviewRepository;
 import com.hirehub.hirehub_backend.repository.JobRepository;
 import com.hirehub.hirehub_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,9 @@ public class CompanyServiceImpl implements CompanyService {
     
     @Autowired
     private JobRepository jobRepository;
+    
+    @Autowired
+    private CompanyReviewRepository companyReviewRepository;
     
     @Override
     public CompanyDto registerCompany(Long ownerId, CompanyDto companyDto) throws Exception {
@@ -155,6 +161,58 @@ public class CompanyServiceImpl implements CompanyService {
                 offeredApplications,
                 recentJobs
         );
+    }
+    
+    @Override
+    public CompanyReviewDto addReview(Long companyId, Long reviewerId, CompanyReviewDto reviewDto) throws Exception {
+        // Check if company exists
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new Exception("Company not found"));
+        
+        // Check if reviewer exists
+        User reviewer = userRepository.findById(reviewerId)
+                .orElseThrow(() -> new Exception("Reviewer not found"));
+        
+        // Check if user has already reviewed this company
+        if (companyReviewRepository.existsByCompanyIdAndReviewerId(companyId, reviewerId)) {
+            throw new Exception("You have already reviewed this company");
+        }
+        
+        // Validate rating
+        if (reviewDto.getRating() == null || reviewDto.getRating() < 1 || reviewDto.getRating() > 5) {
+            throw new Exception("Rating must be between 1 and 5");
+        }
+        
+        // Create review
+        CompanyReview review = reviewDto.toEntity();
+        review.setCompany(company);
+        review.setReviewer(reviewer);
+        
+        CompanyReview savedReview = companyReviewRepository.save(review);
+        return savedReview.toDto();
+    }
+    
+    @Override
+    public List<CompanyReviewDto> getCompanyReviews(Long companyId) {
+        return companyReviewRepository.findByCompanyId(companyId).stream()
+                .map(CompanyReview::toDto)
+                .collect(Collectors.toList());
+    }
+    
+    @Override
+    public Double getCompanyAverageRating(Long companyId) {
+        List<CompanyReview> reviews = companyReviewRepository.findByCompanyId(companyId);
+        
+        if (reviews.isEmpty()) {
+            return 0.0;
+        }
+        
+        double average = reviews.stream()
+                .mapToInt(CompanyReview::getRating)
+                .average()
+                .orElse(0.0);
+        
+        return Math.round(average * 10.0) / 10.0; // Round to 1 decimal place
     }
 }
 

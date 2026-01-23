@@ -13,5 +13,9 @@ public interface CompanyService {
     List<CompanyDto> getAllCompanies();
     List<CompanyDto> getCompaniesByOwner(Long ownerId);
     CompanyDashboardDto getCompanyDashboard(Long companyId) throws Exception;
+    
+    com.hirehub.hirehub_backend.dto.CompanyReviewDto addReview(Long companyId, Long reviewerId, com.hirehub.hirehub_backend.dto.CompanyReviewDto reviewDto) throws Exception;
+    List<com.hirehub.hirehub_backend.dto.CompanyReviewDto> getCompanyReviews(Long companyId);
+    Double getCompanyAverageRating(Long companyId);
 }
 

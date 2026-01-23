@@ -36,6 +36,9 @@ public class Company {
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Job> jobs; // Jobs posted by this company
     
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CompanyReview> reviews; // Reviews for this company
+    
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner; // User who owns/registered this company
