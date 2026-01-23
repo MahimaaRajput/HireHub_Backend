@@ -1,10 +1,16 @@
 package com.hirehub.hirehub_backend.service;
 
+import com.hirehub.hirehub_backend.dto.CompanyDashboardDto;
 import com.hirehub.hirehub_backend.dto.CompanyDto;
+import com.hirehub.hirehub_backend.dto.JobDto;
 import com.hirehub.hirehub_backend.entity.Company;
+import com.hirehub.hirehub_backend.entity.Job;
 import com.hirehub.hirehub_backend.entity.User;
+import com.hirehub.hirehub_backend.enums.ApplicationStatus;
+import com.hirehub.hirehub_backend.enums.JobStatus;
 import com.hirehub.hirehub_backend.enums.VerificationStatus;
 import com.hirehub.hirehub_backend.repository.CompanyRepository;
+import com.hirehub.hirehub_backend.repository.JobRepository;
 import com.hirehub.hirehub_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +26,9 @@ public class CompanyServiceImpl implements CompanyService {
     
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private JobRepository jobRepository;
     
     @Override
     public CompanyDto registerCompany(Long ownerId, CompanyDto companyDto) throws Exception {
@@ -92,6 +101,60 @@ public class CompanyServiceImpl implements CompanyService {
         return companyRepository.findByOwnerId(ownerId).stream()
                 .map(Company::toDto)
                 .collect(Collectors.toList());
+    }
+    
+    @Override
+    public CompanyDashboardDto getCompanyDashboard(Long companyId) throws Exception {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new Exception("Company not found"));
+        
+        // Get all jobs for this company
+        List<Job> allJobs = jobRepository.findAll().stream()
+                .filter(job -> job.getCompanyEntity() != null && job.getCompanyEntity().getId().equals(companyId))
+                .collect(Collectors.toList());
+        
+        // Calculate statistics
+        long totalJobsPosted = allJobs.size();
+        long activeJobsCount = allJobs.stream()
+                .filter(job -> job.getJobStatus() == JobStatus.OPEN)
+                .count();
+        
+        long totalApplications = allJobs.stream()
+                .mapToLong(job -> job.getApplicants() != null ? job.getApplicants().size() : 0)
+                .sum();
+        
+        long pendingApplications = allJobs.stream()
+                .flatMap(job -> job.getApplicants() != null ? job.getApplicants().stream() : java.util.stream.Stream.empty())
+                .filter(app -> app.getApplicationStatus() == ApplicationStatus.APPLIED)
+                .count();
+        
+        long interviewingApplications = allJobs.stream()
+                .flatMap(job -> job.getApplicants() != null ? job.getApplicants().stream() : java.util.stream.Stream.empty())
+                .filter(app -> app.getApplicationStatus() == ApplicationStatus.INTERVIEWING)
+                .count();
+        
+        long offeredApplications = allJobs.stream()
+                .flatMap(job -> job.getApplicants() != null ? job.getApplicants().stream() : java.util.stream.Stream.empty())
+                .filter(app -> app.getApplicationStatus() == ApplicationStatus.OFFERED)
+                .count();
+        
+        // Get recent jobs (last 5, sorted by creation date)
+        List<JobDto> recentJobs = allJobs.stream()
+                .sorted((j1, j2) -> j2.getCreatedAt().compareTo(j1.getCreatedAt()))
+                .limit(5)
+                .map(Job::toDto)
+                .collect(Collectors.toList());
+        
+        return new CompanyDashboardDto(
+                company.toDto(),
+                totalJobsPosted,
+                activeJobsCount,
+                totalApplications,
+                pendingApplications,
+                interviewingApplications,
+                offeredApplications,
+                recentJobs
+        );
     }
 }
 

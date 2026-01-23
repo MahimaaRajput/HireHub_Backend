@@ -12,5 +12,6 @@ public interface CompanyService {
     void rejectCompany(Long id) throws Exception;
     List<CompanyDto> getAllCompanies();
     List<CompanyDto> getCompaniesByOwner(Long ownerId);
+    CompanyDashboardDto getCompanyDashboard(Long companyId) throws Exception;
 }
 
