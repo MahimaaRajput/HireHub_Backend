@@ -190,6 +190,20 @@ public class JobServiceImpl implements JobService{
         return jobs.stream().map(Job::toDto).collect(Collectors.toList());
     }
 
+    @Override
+    public List<ApplicantDto> getApplicantsForJob(Long jobId) throws Exception {
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() -> new Exception("Job not found"));
+        
+        if (job.getApplicants() == null || job.getApplicants().isEmpty()) {
+            return new ArrayList<>();
+        }
+        
+        return job.getApplicants().stream()
+                .map(Applicant::toDto)
+                .collect(Collectors.toList());
+    }
+
 
 
 

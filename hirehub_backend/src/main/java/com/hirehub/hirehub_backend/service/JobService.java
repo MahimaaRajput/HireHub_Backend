@@ -29,5 +29,7 @@ public interface  JobService {
     List<JobDto> getAllJobsSorted(String sortBy);
     
     List<JobDto> getJobsByCompany(String company);
+    
+    List<ApplicantDto> getApplicantsForJob(Long jobId) throws Exception;
 }
 

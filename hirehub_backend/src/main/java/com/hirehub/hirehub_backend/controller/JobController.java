@@ -122,5 +122,11 @@ public class JobController {
         return new ResponseEntity<>(jobs, HttpStatus.OK);
     }
 
+    @GetMapping("api/recruiter/job/{jobId}/applicants")
+    public ResponseEntity<List<ApplicantDto>> getApplicantsForJob(@PathVariable Long jobId) throws Exception {
+        List<ApplicantDto> applicants = jobService.getApplicantsForJob(jobId);
+        return new ResponseEntity<>(applicants, HttpStatus.OK);
+    }
+
 
 }
