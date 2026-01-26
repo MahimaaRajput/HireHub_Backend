@@ -22,6 +22,7 @@ public class ApplicantDto {
     private LocalDateTime timestamp;
     private ApplicationStatus applicationStatus;
     private LocalDateTime interviewTime;
+    private Long userId; // User ID who applied (for better tracking)
 
     public Applicant toEntity(){
         Applicant applicant = new Applicant();

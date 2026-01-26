@@ -47,8 +47,14 @@ public class JobController {
         return new ResponseEntity<>(jobService.getJobById(id),HttpStatus.OK);
     }
     @PostMapping("api/user/apply/{id}")
-      public ResponseEntity<String> applyJob(@PathVariable Long id, @RequestBody ApplicantDto applicantDto) throws Exception {
-        return new ResponseEntity<>(jobService.applyJob(id,applicantDto),HttpStatus.OK);
+    public ResponseEntity<String> applyJob(
+            @RequestHeader("Authorization") String jwt,
+            @PathVariable Long id, 
+            @RequestBody ApplicantDto applicantDto) throws Exception {
+        // Get user ID from JWT token and set it in DTO for proper user tracking
+        Long userId = JwtProvider.getUserIdFromToken(jwt);
+        applicantDto.setUserId(userId);
+        return new ResponseEntity<>(jobService.applyJob(id, applicantDto), HttpStatus.OK);
     }
     @GetMapping("api/common/postedBy/{id}")
     public ResponseEntity<List<JobDto>>getJobsPostedBy(@PathVariable Long id)throws Exception

@@ -71,17 +71,26 @@ public class JobServiceImpl implements JobService{
         Job job=jobRepository.findById(id).orElseThrow(()->new Exception("job not found with this id"));
         List<Applicant> applicants=job.getApplicants();
         if (applicants==null)applicants=new ArrayList<>();
-        if(applicants.stream().anyMatch(x -> x.getEmail().equals(applicantDto.getEmail()))) {
+        
+        // Check if user has already applied (by email or by user ID if linked)
+        if(applicants.stream().anyMatch(x -> 
+            x.getEmail().equals(applicantDto.getEmail()) || 
+            (x.getUser() != null && applicantDto.getUserId() != null && x.getUser().getId().equals(applicantDto.getUserId()))
+        )) {
             throw new Exception("You have already applied for this job");
         }
+        
         applicantDto.setTimestamp(LocalDateTime.now());
         applicantDto.setApplicationStatus(ApplicationStatus.APPLIED);
         Applicant newApplicant = applicantDto.toEntity();
         newApplicant.setJob(job);
         
-        // Link user if userId is provided in the DTO (we'll need to update ApplicantDto)
-        // For now, we'll find user by email
-        if (applicantDto.getEmail() != null) {
+        // Link user by userId if provided, otherwise by email
+        if (applicantDto.getUserId() != null) {
+            User user = userRepository.findById(applicantDto.getUserId())
+                    .orElseThrow(() -> new Exception("User not found"));
+            newApplicant.setUser(user);
+        } else if (applicantDto.getEmail() != null) {
             userRepository.findByEmail(applicantDto.getEmail()).ifPresent(newApplicant::setUser);
         }
         
