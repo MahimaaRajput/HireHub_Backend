@@ -34,6 +34,10 @@ public class Applicant {
     @ManyToOne
     @JoinColumn(name = "job_id")
     private Job job;
+    
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user; // User who applied (for better tracking)
 
     public ApplicantDto toDto(){
         return new ApplicantDto(this.applicantId,this.name,this.email,this.phoneNumber,this.resume!=null? Base64.getEncoder().encodeToString(this.resume):null,this.coverLetter,this.timestamp,this.applicationStatus, this.interviewTime);

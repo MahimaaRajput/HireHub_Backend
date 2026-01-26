@@ -26,7 +26,7 @@ public class SavedJobServiceImpl implements SavedJobService {
     private JobRepository jobRepository;
     
     @Override
-    public void saveJob(Long userId, Long jobId) throws Exception {
+    public String saveJob(Long userId, Long jobId) throws Exception {
         // Check if already saved
         if (savedJobRepository.existsByUserIdAndJobId(userId, jobId)) {
             throw new Exception("Job is already saved");
@@ -43,15 +43,16 @@ public class SavedJobServiceImpl implements SavedJobService {
         savedJob.setJob(job);
         
         savedJobRepository.save(savedJob);
+        return "Job saved successfully";
     }
     
     @Override
-    public void unsaveJob(Long userId, Long jobId) throws Exception {
-        if (!savedJobRepository.existsByUserIdAndJobId(userId, jobId)) {
-            throw new Exception("Job is not saved");
-        }
+    public String unsaveJob(Long userId, Long jobId) throws Exception {
+        SavedJob savedJob = savedJobRepository.findByUserIdAndJobId(userId, jobId)
+                .orElseThrow(() -> new Exception("Job is not saved"));
         
-        savedJobRepository.deleteByUserIdAndJobId(userId, jobId);
+        savedJobRepository.delete(savedJob);
+        return "Job unsaved successfully";
     }
     
     @Override
@@ -68,4 +69,3 @@ public class SavedJobServiceImpl implements SavedJobService {
         return savedJobRepository.existsByUserIdAndJobId(userId, jobId);
     }
 }
-

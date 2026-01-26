@@ -23,10 +23,9 @@ public class SavedJob {
     
     @ManyToOne
     @JoinColumn(name = "job_id")
-    private Job job; // Job that was saved
+    private Job job; // Saved job
     
     @CreationTimestamp
     @Column(updatable = false)
-    private LocalDateTime savedAt;
+    private LocalDateTime savedAt; // When the job was saved
 }
-
