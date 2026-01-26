@@ -1,5 +1,7 @@
 package com.hirehub.hirehub_backend.service;
 
+import com.hirehub.hirehub_backend.dto.ApplicationDashboardDto;
+import com.hirehub.hirehub_backend.dto.ApplicationHistoryDto;
 import com.hirehub.hirehub_backend.dto.ApplicantDto;
 import com.hirehub.hirehub_backend.dto.ApplicationDto;
 import com.hirehub.hirehub_backend.dto.JobDto;
@@ -7,6 +9,7 @@ import com.hirehub.hirehub_backend.entity.Applicant;
 import com.hirehub.hirehub_backend.entity.Job;
 import com.hirehub.hirehub_backend.entity.User;
 import com.hirehub.hirehub_backend.enums.ApplicationStatus;
+import com.hirehub.hirehub_backend.repository.ApplicantRepository;
 import com.hirehub.hirehub_backend.repository.JobRepository;
 import com.hirehub.hirehub_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,8 @@ public class JobServiceImpl implements JobService{
     private JobRepository jobRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ApplicantRepository applicantRepository;
 
     @Override
     public JobDto postJob(JobDto jobDto) {
@@ -73,6 +78,13 @@ public class JobServiceImpl implements JobService{
         applicantDto.setApplicationStatus(ApplicationStatus.APPLIED);
         Applicant newApplicant = applicantDto.toEntity();
         newApplicant.setJob(job);
+        
+        // Link user if userId is provided in the DTO (we'll need to update ApplicantDto)
+        // For now, we'll find user by email
+        if (applicantDto.getEmail() != null) {
+            userRepository.findByEmail(applicantDto.getEmail()).ifPresent(newApplicant::setUser);
+        }
+        
         applicants.add(newApplicant);
         job.setApplicants(applicants);
         jobRepository.save(job);
@@ -231,6 +243,91 @@ public class JobServiceImpl implements JobService{
         }
         
         jobRepository.save(job);
+    }
+
+    @Override
+    public ApplicationDashboardDto getApplicationDashboard(Long userId) throws Exception {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new Exception("User not found"));
+        
+        // Get all applications for this user
+        List<Applicant> allApplications = applicantRepository.findByUserId(userId);
+        
+        // Calculate statistics
+        long totalApplications = allApplications.size();
+        long appliedCount = allApplications.stream()
+                .filter(app -> app.getApplicationStatus() == ApplicationStatus.APPLIED)
+                .count();
+        long interviewingCount = allApplications.stream()
+                .filter(app -> app.getApplicationStatus() == ApplicationStatus.INTERVIEWING)
+                .count();
+        long offeredCount = allApplications.stream()
+                .filter(app -> app.getApplicationStatus() == ApplicationStatus.OFFERED)
+                .count();
+        long rejectedCount = allApplications.stream()
+                .filter(app -> app.getApplicationStatus() == ApplicationStatus.REJECTED)
+                .count();
+        long withdrawnCount = allApplications.stream()
+                .filter(app -> app.getApplicationStatus() == ApplicationStatus.WITHDRAWN)
+                .count();
+        
+        // Convert to ApplicationHistoryDto
+        List<ApplicationHistoryDto> allApplicationHistory = allApplications.stream()
+                .map(app -> {
+                    Job job = app.getJob();
+                    return new ApplicationHistoryDto(
+                            app.getApplicantId(),
+                            job != null ? job.getId() : null,
+                            job != null ? job.getJobTitle() : "Unknown",
+                            job != null ? job.getCompany() : "Unknown",
+                            job != null ? job.getLocation() : "Unknown",
+                            app.getApplicationStatus(),
+                            app.getTimestamp(),
+                            app.getInterviewTime(),
+                            app.getCoverLetter()
+                    );
+                })
+                .sorted((a1, a2) -> a2.getAppliedDate().compareTo(a1.getAppliedDate())) // Sort by date, newest first
+                .collect(Collectors.toList());
+        
+        // Get recent applications (last 10)
+        List<ApplicationHistoryDto> recentApplications = allApplicationHistory.stream()
+                .limit(10)
+                .collect(Collectors.toList());
+        
+        return new ApplicationDashboardDto(
+                totalApplications,
+                appliedCount,
+                interviewingCount,
+                offeredCount,
+                rejectedCount,
+                withdrawnCount,
+                recentApplications,
+                allApplicationHistory
+        );
+    }
+
+    @Override
+    public void withdrawApplication(Long userId, Long applicationId) throws Exception {
+        Applicant applicant = applicantRepository.findById(applicationId)
+                .orElseThrow(() -> new Exception("Application not found"));
+        
+        // Verify the application belongs to the user
+        if (applicant.getUser() == null || !applicant.getUser().getId().equals(userId)) {
+            throw new Exception("You can only withdraw your own applications");
+        }
+        
+        // Check if already withdrawn or in final state
+        if (applicant.getApplicationStatus() == ApplicationStatus.WITHDRAWN) {
+            throw new Exception("Application is already withdrawn");
+        }
+        
+        if (applicant.getApplicationStatus() == ApplicationStatus.OFFERED) {
+            throw new Exception("Cannot withdraw an application that has been offered");
+        }
+        
+        applicant.setApplicationStatus(ApplicationStatus.WITHDRAWN);
+        applicantRepository.save(applicant);
     }
 
 

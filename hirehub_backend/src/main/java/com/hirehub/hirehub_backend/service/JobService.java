@@ -33,5 +33,8 @@ public interface  JobService {
     List<ApplicantDto> getApplicantsForJob(Long jobId) throws Exception;
     
     void bulkUpdateApplicationStatus(com.hirehub.hirehub_backend.dto.BulkApplicationActionDto bulkAction) throws Exception;
+    
+    com.hirehub.hirehub_backend.dto.ApplicationDashboardDto getApplicationDashboard(Long userId) throws Exception;
+    void withdrawApplication(Long userId, Long applicationId) throws Exception;
 }
 
