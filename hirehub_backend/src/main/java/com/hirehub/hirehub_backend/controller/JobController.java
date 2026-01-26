@@ -8,7 +8,11 @@ import com.hirehub.hirehub_backend.dto.ApplicationNoteDto;
 import com.hirehub.hirehub_backend.dto.BulkApplicationActionDto;
 import com.hirehub.hirehub_backend.dto.JobDto;
 import com.hirehub.hirehub_backend.dto.ResponseDto;
+import com.hirehub.hirehub_backend.service.ApplicationExportService;
 import com.hirehub.hirehub_backend.service.JobService;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +28,9 @@ import java.util.List;
 public class JobController {
     @Autowired
     private JobService jobService;
+    
+    @Autowired
+    private ApplicationExportService exportService;
 
     @PostMapping("api/recruiter/post")
     public ResponseEntity<JobDto>postJob(@RequestBody @Valid JobDto jobDto,@RequestHeader("Authorization") String jwt)
@@ -169,6 +176,24 @@ public class JobController {
     public ResponseEntity<ApplicationAnalyticsDto> getApplicationAnalytics(@PathVariable Long jobId) throws Exception {
         ApplicationAnalyticsDto analytics = jobService.getApplicationAnalytics(jobId);
         return new ResponseEntity<>(analytics, HttpStatus.OK);
+    }
+
+    @GetMapping("api/recruiter/job/{jobId}/export/csv")
+    public ResponseEntity<Resource> exportApplicationsToCSV(@PathVariable Long jobId) throws Exception {
+        Resource resource = exportService.exportApplicationsToCSV(jobId);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .body(resource);
+    }
+
+    @GetMapping("api/recruiter/job/{jobId}/export/excel")
+    public ResponseEntity<Resource> exportApplicationsToExcel(@PathVariable Long jobId) throws Exception {
+        Resource resource = exportService.exportApplicationsToExcel(jobId);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(resource);
     }
 
 
