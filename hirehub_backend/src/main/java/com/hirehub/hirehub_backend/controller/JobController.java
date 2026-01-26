@@ -1,6 +1,7 @@
 package com.hirehub.hirehub_backend.controller;
 
 import com.hirehub.hirehub_backend.config.JwtProvider;
+import com.hirehub.hirehub_backend.dto.ApplicationAnalyticsDto;
 import com.hirehub.hirehub_backend.dto.ApplicantDto;
 import com.hirehub.hirehub_backend.dto.ApplicationDto;
 import com.hirehub.hirehub_backend.dto.ApplicationNoteDto;
@@ -146,6 +147,28 @@ public class JobController {
     public ResponseEntity<ResponseDto> addApplicationNotes(@RequestBody ApplicationNoteDto noteDto) throws Exception {
         jobService.addApplicationNotes(noteDto);
         return new ResponseEntity<>(new ResponseDto("Application notes updated successfully"), HttpStatus.OK);
+    }
+
+    @PostMapping("api/recruiter/job/{jobId}/applicant/{applicantId}/view")
+    public ResponseEntity<ResponseDto> incrementApplicationView(
+            @PathVariable Long jobId,
+            @PathVariable Long applicantId) throws Exception {
+        jobService.incrementApplicationView(jobId, applicantId);
+        return new ResponseEntity<>(new ResponseDto("View count incremented"), HttpStatus.OK);
+    }
+
+    @PostMapping("api/recruiter/job/{jobId}/applicant/{applicantId}/shortlist")
+    public ResponseEntity<ResponseDto> toggleShortlistApplication(
+            @PathVariable Long jobId,
+            @PathVariable Long applicantId) throws Exception {
+        jobService.toggleShortlistApplication(jobId, applicantId);
+        return new ResponseEntity<>(new ResponseDto("Shortlist status toggled"), HttpStatus.OK);
+    }
+
+    @GetMapping("api/recruiter/job/{jobId}/analytics")
+    public ResponseEntity<ApplicationAnalyticsDto> getApplicationAnalytics(@PathVariable Long jobId) throws Exception {
+        ApplicationAnalyticsDto analytics = jobService.getApplicationAnalytics(jobId);
+        return new ResponseEntity<>(analytics, HttpStatus.OK);
     }
 
 

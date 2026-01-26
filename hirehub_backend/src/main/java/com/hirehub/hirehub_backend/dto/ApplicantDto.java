@@ -24,6 +24,9 @@ public class ApplicantDto {
     private LocalDateTime interviewTime;
     private Long userId; // User ID who applied (for better tracking)
     private String recruiterNotes; // Notes added by recruiter (private, not visible to applicant)
+    private Integer viewCount; // Number of times application was viewed
+    private Boolean isShortlisted; // Whether application is shortlisted
+    private LocalDateTime shortlistedAt; // When application was shortlisted
 
     public Applicant toEntity(){
         Applicant applicant = new Applicant();
@@ -38,6 +41,9 @@ public class ApplicantDto {
         applicant.setApplicationStatus(this.applicationStatus);
         applicant.setInterviewTime(this.interviewTime);
         applicant.setRecruiterNotes(this.recruiterNotes);
+        applicant.setViewCount(this.viewCount != null ? this.viewCount : 0);
+        applicant.setIsShortlisted(this.isShortlisted != null ? this.isShortlisted : false);
+        applicant.setShortlistedAt(this.shortlistedAt);
         // Job will be set separately in service layer
         return applicant;
     }

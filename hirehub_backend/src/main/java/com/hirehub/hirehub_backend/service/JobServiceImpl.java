@@ -353,6 +353,109 @@ public class JobServiceImpl implements JobService{
         jobRepository.save(job);
     }
 
+    @Override
+    public void incrementApplicationView(Long jobId, Long applicantId) throws Exception {
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() -> new Exception("Job not found"));
+        
+        Applicant applicant = job.getApplicants().stream()
+                .filter(app -> app.getApplicantId().equals(applicantId))
+                .findFirst()
+                .orElseThrow(() -> new Exception("Applicant not found for this job"));
+        
+        // Increment view count
+        if (applicant.getViewCount() == null) {
+            applicant.setViewCount(0);
+        }
+        applicant.setViewCount(applicant.getViewCount() + 1);
+        jobRepository.save(job);
+    }
+
+    @Override
+    public void toggleShortlistApplication(Long jobId, Long applicantId) throws Exception {
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() -> new Exception("Job not found"));
+        
+        Applicant applicant = job.getApplicants().stream()
+                .filter(app -> app.getApplicantId().equals(applicantId))
+                .findFirst()
+                .orElseThrow(() -> new Exception("Applicant not found for this job"));
+        
+        // Toggle shortlist status
+        boolean newShortlistStatus = applicant.getIsShortlisted() == null || !applicant.getIsShortlisted();
+        applicant.setIsShortlisted(newShortlistStatus);
+        
+        if (newShortlistStatus) {
+            applicant.setShortlistedAt(LocalDateTime.now());
+        } else {
+            applicant.setShortlistedAt(null);
+        }
+        
+        jobRepository.save(job);
+    }
+
+    @Override
+    public com.hirehub.hirehub_backend.dto.ApplicationAnalyticsDto getApplicationAnalytics(Long jobId) throws Exception {
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() -> new Exception("Job not found"));
+        
+        List<Applicant> applicants = job.getApplicants();
+        if (applicants == null) {
+            applicants = new ArrayList<>();
+        }
+        
+        // Calculate statistics
+        Long totalApplications = (long) applicants.size();
+        Long totalViews = applicants.stream()
+                .mapToLong(app -> app.getViewCount() != null ? app.getViewCount() : 0)
+                .sum();
+        Long shortlistedCount = applicants.stream()
+                .filter(app -> app.getIsShortlisted() != null && app.getIsShortlisted())
+                .count();
+        Long interviewedCount = applicants.stream()
+                .filter(app -> app.getApplicationStatus() == ApplicationStatus.INTERVIEWING)
+                .count();
+        Long offeredCount = applicants.stream()
+                .filter(app -> app.getApplicationStatus() == ApplicationStatus.OFFERED)
+                .count();
+        Long rejectedCount = applicants.stream()
+                .filter(app -> app.getApplicationStatus() == ApplicationStatus.REJECTED)
+                .count();
+        
+        // Get most viewed applications (top 10)
+        List<ApplicantDto> mostViewedApplications = applicants.stream()
+                .sorted((a1, a2) -> {
+                    int views1 = a1.getViewCount() != null ? a1.getViewCount() : 0;
+                    int views2 = a2.getViewCount() != null ? a2.getViewCount() : 0;
+                    return Integer.compare(views2, views1); // Descending order
+                })
+                .limit(10)
+                .map(Applicant::toDto)
+                .collect(Collectors.toList());
+        
+        // Get shortlisted applications
+        List<ApplicantDto> shortlistedApplications = applicants.stream()
+                .filter(app -> app.getIsShortlisted() != null && app.getIsShortlisted())
+                .sorted((a1, a2) -> {
+                    if (a1.getShortlistedAt() == null) return 1;
+                    if (a2.getShortlistedAt() == null) return -1;
+                    return a2.getShortlistedAt().compareTo(a1.getShortlistedAt()); // Newest first
+                })
+                .map(Applicant::toDto)
+                .collect(Collectors.toList());
+        
+        return new com.hirehub.hirehub_backend.dto.ApplicationAnalyticsDto(
+                totalApplications,
+                totalViews,
+                shortlistedCount,
+                interviewedCount,
+                offeredCount,
+                rejectedCount,
+                mostViewedApplications,
+                shortlistedApplications
+        );
+    }
+
 
 
 

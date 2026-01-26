@@ -31,6 +31,9 @@ public class Applicant {
     private ApplicationStatus applicationStatus;
     private LocalDateTime interviewTime;
     private String recruiterNotes; // Notes added by recruiter (private, not visible to applicant)
+    private Integer viewCount; // Number of times application was viewed by recruiter
+    private Boolean isShortlisted; // Whether application is shortlisted
+    private LocalDateTime shortlistedAt; // When application was shortlisted
 
     @ManyToOne
     @JoinColumn(name = "job_id")
@@ -41,6 +44,6 @@ public class Applicant {
     private User user; // User who applied (for better tracking)
 
     public ApplicantDto toDto(){
-        return new ApplicantDto(this.applicantId,this.name,this.email,this.phoneNumber,this.resume!=null? Base64.getEncoder().encodeToString(this.resume):null,this.coverLetter,this.timestamp,this.applicationStatus, this.interviewTime, this.user != null ? this.user.getId() : null, this.recruiterNotes);
+        return new ApplicantDto(this.applicantId,this.name,this.email,this.phoneNumber,this.resume!=null? Base64.getEncoder().encodeToString(this.resume):null,this.coverLetter,this.timestamp,this.applicationStatus, this.interviewTime, this.user != null ? this.user.getId() : null, this.recruiterNotes, this.viewCount != null ? this.viewCount : 0, this.isShortlisted != null ? this.isShortlisted : false, this.shortlistedAt);
     }
 }
