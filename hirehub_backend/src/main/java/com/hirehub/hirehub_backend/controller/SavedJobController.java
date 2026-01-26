@@ -20,49 +20,36 @@ public class SavedJobController {
     
     @PostMapping("/save-job/{jobId}")
     public ResponseEntity<ResponseDto> saveJob(
-            @PathVariable Long jobId,
-            @RequestHeader("Authorization") String jwt) throws Exception {
+            @RequestHeader("Authorization") String jwt,
+            @PathVariable Long jobId) throws Exception {
         Long userId = JwtProvider.getUserIdFromToken(jwt);
-        if (userId == null) {
-            throw new RuntimeException("Invalid token: userId is null");
-        }
-        savedJobService.saveJob(userId, jobId);
-        return new ResponseEntity<>(new ResponseDto("Job saved successfully"), HttpStatus.OK);
+        String message = savedJobService.saveJob(userId, jobId);
+        return new ResponseEntity<>(new ResponseDto(message), HttpStatus.OK);
     }
     
     @DeleteMapping("/unsave-job/{jobId}")
     public ResponseEntity<ResponseDto> unsaveJob(
-            @PathVariable Long jobId,
-            @RequestHeader("Authorization") String jwt) throws Exception {
+            @RequestHeader("Authorization") String jwt,
+            @PathVariable Long jobId) throws Exception {
         Long userId = JwtProvider.getUserIdFromToken(jwt);
-        if (userId == null) {
-            throw new RuntimeException("Invalid token: userId is null");
-        }
-        savedJobService.unsaveJob(userId, jobId);
-        return new ResponseEntity<>(new ResponseDto("Job removed from saved list"), HttpStatus.OK);
+        String message = savedJobService.unsaveJob(userId, jobId);
+        return new ResponseEntity<>(new ResponseDto(message), HttpStatus.OK);
     }
     
     @GetMapping("/saved-jobs")
     public ResponseEntity<List<JobDto>> getSavedJobs(
             @RequestHeader("Authorization") String jwt) {
         Long userId = JwtProvider.getUserIdFromToken(jwt);
-        if (userId == null) {
-            throw new RuntimeException("Invalid token: userId is null");
-        }
         List<JobDto> savedJobs = savedJobService.getSavedJobs(userId);
         return new ResponseEntity<>(savedJobs, HttpStatus.OK);
     }
     
     @GetMapping("/is-saved/{jobId}")
     public ResponseEntity<Boolean> isJobSaved(
-            @PathVariable Long jobId,
-            @RequestHeader("Authorization") String jwt) {
+            @RequestHeader("Authorization") String jwt,
+            @PathVariable Long jobId) {
         Long userId = JwtProvider.getUserIdFromToken(jwt);
-        if (userId == null) {
-            throw new RuntimeException("Invalid token: userId is null");
-        }
         boolean isSaved = savedJobService.isJobSaved(userId, jobId);
         return new ResponseEntity<>(isSaved, HttpStatus.OK);
     }
 }
-
