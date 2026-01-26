@@ -23,6 +23,7 @@ public class ApplicantDto {
     private ApplicationStatus applicationStatus;
     private LocalDateTime interviewTime;
     private Long userId; // User ID who applied (for better tracking)
+    private String recruiterNotes; // Notes added by recruiter (private, not visible to applicant)
 
     public Applicant toEntity(){
         Applicant applicant = new Applicant();
@@ -36,6 +37,7 @@ public class ApplicantDto {
         applicant.setTimestamp(this.timestamp);
         applicant.setApplicationStatus(this.applicationStatus);
         applicant.setInterviewTime(this.interviewTime);
+        applicant.setRecruiterNotes(this.recruiterNotes);
         // Job will be set separately in service layer
         return applicant;
     }

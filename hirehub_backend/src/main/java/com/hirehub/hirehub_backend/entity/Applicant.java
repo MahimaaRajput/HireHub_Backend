@@ -30,6 +30,7 @@ public class Applicant {
     @Enumerated(EnumType.STRING)
     private ApplicationStatus applicationStatus;
     private LocalDateTime interviewTime;
+    private String recruiterNotes; // Notes added by recruiter (private, not visible to applicant)
 
     @ManyToOne
     @JoinColumn(name = "job_id")
@@ -40,6 +41,6 @@ public class Applicant {
     private User user; // User who applied (for better tracking)
 
     public ApplicantDto toDto(){
-        return new ApplicantDto(this.applicantId,this.name,this.email,this.phoneNumber,this.resume!=null? Base64.getEncoder().encodeToString(this.resume):null,this.coverLetter,this.timestamp,this.applicationStatus, this.interviewTime);
+        return new ApplicantDto(this.applicantId,this.name,this.email,this.phoneNumber,this.resume!=null? Base64.getEncoder().encodeToString(this.resume):null,this.coverLetter,this.timestamp,this.applicationStatus, this.interviewTime, this.user != null ? this.user.getId() : null, this.recruiterNotes);
     }
 }

@@ -339,6 +339,20 @@ public class JobServiceImpl implements JobService{
         applicantRepository.save(applicant);
     }
 
+    @Override
+    public void addApplicationNotes(com.hirehub.hirehub_backend.dto.ApplicationNoteDto noteDto) throws Exception {
+        Job job = jobRepository.findById(noteDto.getJobId())
+                .orElseThrow(() -> new Exception("Job not found"));
+        
+        Applicant applicant = job.getApplicants().stream()
+                .filter(app -> app.getApplicantId().equals(noteDto.getApplicantId()))
+                .findFirst()
+                .orElseThrow(() -> new Exception("Applicant not found for this job"));
+        
+        applicant.setRecruiterNotes(noteDto.getNotes());
+        jobRepository.save(job);
+    }
+
 
 
 

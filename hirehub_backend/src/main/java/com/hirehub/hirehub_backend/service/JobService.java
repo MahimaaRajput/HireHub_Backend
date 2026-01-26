@@ -36,5 +36,6 @@ public interface  JobService {
     
     com.hirehub.hirehub_backend.dto.ApplicationDashboardDto getApplicationDashboard(Long userId) throws Exception;
     void withdrawApplication(Long userId, Long applicationId) throws Exception;
+    void addApplicationNotes(com.hirehub.hirehub_backend.dto.ApplicationNoteDto noteDto) throws Exception;
 }
 
