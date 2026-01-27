@@ -20,13 +20,15 @@ public class UserNotificationPreferencesServiceImpl implements UserNotificationP
     @Override
     public UserNotificationPreferencesDto getPreferences(Long userId) throws Exception {
         UserNotificationPreferences preferences = preferencesRepository.findByUserId(userId)
-                .orElseGet(() -> {
-                    try {
-                        return createDefaultPreferences(userId).toEntity();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+                .orElse(null);
+        
+        if (preferences == null) {
+            // Create default preferences if they don't exist
+            createDefaultPreferences(userId);
+            preferences = preferencesRepository.findByUserId(userId)
+                    .orElseThrow(() -> new Exception("Failed to create preferences"));
+        }
+        
         return toDto(preferences);
     }
     
