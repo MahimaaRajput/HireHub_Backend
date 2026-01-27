@@ -20,3 +20,4 @@ public class CompanyDashboardDto {
     private List<JobDto> recentJobs;
 }
 
+

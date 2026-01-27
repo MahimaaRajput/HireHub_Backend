@@ -11,3 +11,4 @@ public interface CompanyReviewRepository extends JpaRepository<CompanyReview, Lo
     boolean existsByCompanyIdAndReviewerId(Long companyId, Long reviewerId);
 }
 
+

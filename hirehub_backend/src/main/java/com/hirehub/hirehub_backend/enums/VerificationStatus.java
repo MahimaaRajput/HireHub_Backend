@@ -6,3 +6,4 @@ public enum VerificationStatus {
     REJECTED    // Verification request was rejected
 }
 
+

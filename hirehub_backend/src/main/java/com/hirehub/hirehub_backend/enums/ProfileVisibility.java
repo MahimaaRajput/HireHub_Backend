@@ -5,3 +5,4 @@ public enum ProfileVisibility {
     PRIVATE    // Profile is only visible to the user
 }
 
+

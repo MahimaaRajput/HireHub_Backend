@@ -7,3 +7,4 @@ public interface ApplicationExportService {
     Resource exportApplicationsToExcel(Long jobId) throws Exception;
 }
 
+

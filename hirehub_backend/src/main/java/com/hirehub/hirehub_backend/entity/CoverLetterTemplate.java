@@ -34,3 +34,4 @@ public class CoverLetterTemplate {
     private LocalDateTime updatedAt;
 }
 
+

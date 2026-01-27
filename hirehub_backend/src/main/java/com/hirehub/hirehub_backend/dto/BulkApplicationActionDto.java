@@ -16,3 +16,4 @@ public class BulkApplicationActionDto {
     private ApplicationStatus newStatus; // New status to apply to all selected applicants
 }
 
+

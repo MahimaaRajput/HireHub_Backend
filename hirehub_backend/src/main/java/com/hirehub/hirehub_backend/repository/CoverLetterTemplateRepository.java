@@ -12,3 +12,4 @@ public interface CoverLetterTemplateRepository extends JpaRepository<CoverLetter
     Optional<CoverLetterTemplate> findByIdAndUserId(Long id, Long userId);
 }
 
+

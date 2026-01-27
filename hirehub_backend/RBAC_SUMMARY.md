@@ -98,3 +98,4 @@ These endpoints are accessible by both roles:
 - User ID is extracted from JWT token to ensure users can only access their own resources
 - Company verification/rejection should ideally be admin-only (currently accessible to RECRUITER)
 
+

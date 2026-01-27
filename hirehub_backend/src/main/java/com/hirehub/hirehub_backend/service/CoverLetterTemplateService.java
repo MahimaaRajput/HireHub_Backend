@@ -14,3 +14,4 @@ public interface CoverLetterTemplateService {
     CoverLetterTemplateDto getDefaultTemplate(Long userId) throws Exception;
 }
 
+

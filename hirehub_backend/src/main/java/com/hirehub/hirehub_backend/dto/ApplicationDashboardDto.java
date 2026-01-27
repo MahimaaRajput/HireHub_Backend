@@ -20,3 +20,4 @@ public class ApplicationDashboardDto {
     private List<ApplicationHistoryDto> allApplications;
 }
 
+
