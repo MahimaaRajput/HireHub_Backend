@@ -28,6 +28,9 @@ public class JobServiceImpl implements JobService{
     private UserRepository userRepository;
     @Autowired
     private ApplicantRepository applicantRepository;
+    
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public JobDto postJob(JobDto jobDto) {
@@ -122,10 +125,25 @@ public class JobServiceImpl implements JobService{
                 .orElseThrow(() -> new Exception("Applicant not found for this job"));
 
         //  Update applicant fields
+        ApplicationStatus oldStatus = targetApplicant.getApplicationStatus();
         targetApplicant.setApplicationStatus(applicationDto.getApplicationStatus());
 
         if (ApplicationStatus.INTERVIEWING.equals(applicationDto.getApplicationStatus())) {
             targetApplicant.setInterviewTime(applicationDto.getInterviewTime());
+        }
+        
+        // Send notification to applicant if status changed and user exists
+        if (targetApplicant.getUser() != null && !oldStatus.equals(applicationDto.getApplicationStatus())) {
+            try {
+                notificationService.sendApplicationStatusNotification(
+                        targetApplicant.getUser().getId(),
+                        job.getJobTitle(),
+                        applicationDto.getApplicationStatus().toString()
+                );
+            } catch (Exception e) {
+                // Log error but don't fail status update
+                System.err.println("Failed to send notification: " + e.getMessage());
+            }
         }
 
         //  Save job with updated applicants
