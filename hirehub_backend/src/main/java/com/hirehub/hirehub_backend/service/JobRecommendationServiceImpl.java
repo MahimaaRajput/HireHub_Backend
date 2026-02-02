@@ -265,10 +265,10 @@ public class JobRecommendationServiceImpl implements JobRecommendationService {
         if (profile.getExperiences() != null && !profile.getExperiences().isEmpty() && 
             job.getExperienceLevel() != null) {
             maxScore += 0.15;
-            // Check if any experience matches the job's experience level
+            // Check if any experience title matches the job's experience level
             boolean experienceMatch = profile.getExperiences().stream()
-                    .anyMatch(exp -> exp.getJobTitle() != null && 
-                            exp.getJobTitle().toLowerCase().contains(job.getExperienceLevel().toLowerCase()));
+                    .anyMatch(exp -> exp.getTitle() != null && 
+                            exp.getTitle().toLowerCase().contains(job.getExperienceLevel().toLowerCase()));
             if (experienceMatch) {
                 score += 0.15;
             }
