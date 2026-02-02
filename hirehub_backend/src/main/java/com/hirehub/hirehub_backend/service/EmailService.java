@@ -6,3 +6,4 @@ public interface EmailService {
     void sendNewJobAlertEmail(String toEmail, String jobTitle, String jobUrl) throws Exception;
 }
 
+

@@ -24,3 +24,4 @@ public class UserNotificationPreferencesDto {
     private LocalDateTime updatedAt;
 }
 
+

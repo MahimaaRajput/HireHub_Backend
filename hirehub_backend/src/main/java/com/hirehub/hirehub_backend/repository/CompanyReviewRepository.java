@@ -12,3 +12,4 @@ public interface CompanyReviewRepository extends JpaRepository<CompanyReview, Lo
 }
 
 
+

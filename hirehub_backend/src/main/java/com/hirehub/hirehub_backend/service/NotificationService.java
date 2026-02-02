@@ -16,3 +16,4 @@ public interface NotificationService {
     void sendJobAlertNotification(Long userId, String alertName, List<Long> jobIds) throws Exception;
 }
 
+

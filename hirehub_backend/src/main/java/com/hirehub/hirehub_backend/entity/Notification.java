@@ -37,3 +37,4 @@ public class Notification {
     private LocalDateTime readAt; // When notification was read
 }
 
+

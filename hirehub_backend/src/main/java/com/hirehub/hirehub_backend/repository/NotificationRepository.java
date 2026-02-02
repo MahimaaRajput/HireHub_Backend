@@ -22,3 +22,4 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     void markAsRead(@Param("notificationId") Long notificationId);
 }
 
+

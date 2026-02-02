@@ -10,3 +10,4 @@ public interface UserNotificationPreferencesService {
     boolean isInAppNotificationEnabled(Long userId, String notificationType);
 }
 
+
