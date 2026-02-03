@@ -35,6 +35,12 @@ public class MessageServiceImpl implements MessageService {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired(required = false)
+    private EmailService emailService;
+
+    @Autowired(required = false)
+    private UserNotificationPreferencesService preferencesService;
+
     @Override
     public ConversationDto createOrGetConversation(Long userId1, Long userId2, Long jobId) throws Exception {
         // Validate users exist
@@ -95,18 +101,36 @@ public class MessageServiceImpl implements MessageService {
         conversation.setLastMessageAt(message.getCreatedAt());
         conversationRepository.save(conversation);
 
-        // Send notification to receiver
+        // Send notification to receiver (in-app and email)
         try {
             String notificationTitle = "New message from " + sender.getFullName();
-            String notificationMessage = content.length() > 100 ? content.substring(0, 100) + "..." : content;
+            String messagePreview = content.length() > 100 ? content.substring(0, 100) + "..." : content;
             com.hirehub.hirehub_backend.dto.NotificationDto notificationDto = new com.hirehub.hirehub_backend.dto.NotificationDto();
             notificationDto.setUserId(receiverId);
             notificationDto.setTitle(notificationTitle);
-            notificationDto.setMessage(notificationMessage);
+            notificationDto.setMessage(messagePreview);
             notificationDto.setType("MESSAGE");
             notificationDto.setRelatedEntityType("CONVERSATION");
             notificationDto.setRelatedEntityId(conversation.getId());
             notificationService.createNotification(receiverId, notificationDto);
+            
+            // Send email notification if user has email notifications enabled for messages
+            if (emailService != null && preferencesService != null && 
+                preferencesService.isEmailNotificationEnabled(receiverId, "MESSAGE")) {
+                try {
+                    String conversationLink = "https://hirehub.com/messages/" + conversation.getId();
+                    emailService.sendNewMessageEmail(
+                        receiver.getEmail(),
+                        receiver.getFullName(),
+                        sender.getFullName(),
+                        messagePreview,
+                        conversationLink
+                    );
+                } catch (Exception emailEx) {
+                    // Log error but don't fail the message sending
+                    System.err.println("Failed to send email notification: " + emailEx.getMessage());
+                }
+            }
         } catch (Exception e) {
             // Log error but don't fail the message sending
             System.err.println("Failed to send notification: " + e.getMessage());
