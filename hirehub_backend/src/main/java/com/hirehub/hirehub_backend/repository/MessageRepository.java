@@ -24,3 +24,4 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     List<Message> findUnreadMessages(@Param("conversationId") Long conversationId, @Param("userId") Long userId);
 }
 
+

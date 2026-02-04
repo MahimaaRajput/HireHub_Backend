@@ -26,3 +26,4 @@ public interface EmailTemplateService {
     String getPasswordResetTemplate(String userName, String resetLink);
 }
 
+

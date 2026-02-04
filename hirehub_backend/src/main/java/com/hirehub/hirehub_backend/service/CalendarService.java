@@ -13,3 +13,4 @@ public interface CalendarService {
     String generateICalContent(InterviewDto interviewDto);
 }
 
+

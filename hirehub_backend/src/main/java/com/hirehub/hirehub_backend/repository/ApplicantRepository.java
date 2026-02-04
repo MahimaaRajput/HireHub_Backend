@@ -13,3 +13,5 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Long> {
 
 
 
+
+

@@ -10,3 +10,5 @@ public interface UserNotificationPreferencesRepository extends JpaRepository<Use
 }
 
 
+
+

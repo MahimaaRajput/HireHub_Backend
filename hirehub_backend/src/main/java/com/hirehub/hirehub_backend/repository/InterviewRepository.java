@@ -36,3 +36,4 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
     List<Interview> findInterviewsBetweenDates(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 }
 
+

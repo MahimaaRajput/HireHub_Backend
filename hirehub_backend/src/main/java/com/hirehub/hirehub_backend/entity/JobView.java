@@ -33,3 +33,5 @@ public class JobView {
     private Integer viewCount; // Number of times this user viewed this job
 }
 
+
+

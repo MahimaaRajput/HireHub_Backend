@@ -12,3 +12,5 @@ public interface JobRecommendationService {
     List<JobDto> getJobRecommendationsBasedOnProfile(Long userId, Integer limit) throws Exception;
 }
 
+
+

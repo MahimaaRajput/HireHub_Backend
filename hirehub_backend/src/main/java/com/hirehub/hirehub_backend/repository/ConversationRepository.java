@@ -28,3 +28,4 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
                                                           @Param("userId2") Long userId2);
 }
 
+

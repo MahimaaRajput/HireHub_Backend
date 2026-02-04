@@ -27,3 +27,4 @@ public class ConversationDto {
     private Long unreadCount; // Number of unread messages for the current user
 }
 
+
