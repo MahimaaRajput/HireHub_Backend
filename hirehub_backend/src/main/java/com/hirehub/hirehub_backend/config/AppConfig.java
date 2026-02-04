@@ -17,9 +17,10 @@ public class AppConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests(Authorize -> Authorize
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/user/**").hasRole("USER")
                         .requestMatchers("/api/recruiter/**").hasRole("RECRUITER")
-                        .requestMatchers("/api/common/**").hasAnyRole("USER","RECRUITER")
+                        .requestMatchers("/api/common/**").hasAnyRole("USER","RECRUITER","ADMIN")
                         .anyRequest()
                         .permitAll())
                 .addFilterBefore(new JwtValidator(), BasicAuthenticationFilter.class)
