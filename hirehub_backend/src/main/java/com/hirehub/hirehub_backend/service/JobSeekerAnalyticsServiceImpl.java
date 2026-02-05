@@ -206,3 +206,4 @@ public class JobSeekerAnalyticsServiceImpl implements JobSeekerAnalyticsService 
     }
 }
 
+

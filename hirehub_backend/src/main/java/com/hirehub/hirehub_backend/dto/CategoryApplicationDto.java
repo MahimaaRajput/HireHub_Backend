@@ -15,3 +15,4 @@ public class CategoryApplicationDto {
     private Double successRate;
 }
 
+

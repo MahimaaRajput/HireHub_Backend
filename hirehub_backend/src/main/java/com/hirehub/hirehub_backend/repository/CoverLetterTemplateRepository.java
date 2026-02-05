@@ -16,3 +16,4 @@ public interface CoverLetterTemplateRepository extends JpaRepository<CoverLetter
 
 
 
+

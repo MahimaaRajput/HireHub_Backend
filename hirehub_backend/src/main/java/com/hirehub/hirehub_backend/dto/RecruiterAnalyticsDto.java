@@ -36,3 +36,4 @@ public class RecruiterAnalyticsDto {
     private Long viewsLast30Days;
 }
 
+

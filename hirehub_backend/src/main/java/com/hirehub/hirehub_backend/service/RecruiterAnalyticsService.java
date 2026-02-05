@@ -7,3 +7,4 @@ public interface RecruiterAnalyticsService {
     RecruiterAnalyticsDto getJobAnalytics(Long jobId, Long recruiterId) throws Exception;
 }
 
+

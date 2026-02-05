@@ -6,3 +6,4 @@ public interface JobSeekerAnalyticsService {
     JobSeekerAnalyticsDto getJobSeekerAnalytics(Long jobSeekerId) throws Exception;
 }
 
+

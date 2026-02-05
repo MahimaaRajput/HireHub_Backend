@@ -46,3 +46,4 @@ public class JobSeekerAnalyticsDto {
     private List<ApplicationTimelineDto> recentApplications;
 }
 
+

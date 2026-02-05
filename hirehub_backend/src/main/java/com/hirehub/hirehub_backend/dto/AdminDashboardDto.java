@@ -39,3 +39,4 @@ public class AdminDashboardDto {
     private Double applicationGrowthRate; // Percentage growth in applications
 }
 
+

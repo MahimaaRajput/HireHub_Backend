@@ -18,3 +18,4 @@ public interface ReportService {
     void exportApplicationHistoryReport(Long jobSeekerId, HttpServletResponse response) throws Exception;
 }
 
+

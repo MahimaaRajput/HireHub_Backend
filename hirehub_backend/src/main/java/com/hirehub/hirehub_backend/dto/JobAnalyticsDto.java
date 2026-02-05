@@ -22,3 +22,4 @@ public class JobAnalyticsDto {
     private Double conversionRate; // Offers per application percentage
 }
 
+
