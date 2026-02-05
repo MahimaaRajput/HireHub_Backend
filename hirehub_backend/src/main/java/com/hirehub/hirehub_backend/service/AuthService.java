@@ -4,7 +4,6 @@ import com.hirehub.hirehub_backend.config.JwtProvider;
 import com.hirehub.hirehub_backend.dto.AuthResponse;
 import com.hirehub.hirehub_backend.dto.UserLoginRequest;
 import com.hirehub.hirehub_backend.dto.UserRegisterRequest;
-import com.hirehub.hirehub_backend.dto.UserResponse;
 import com.hirehub.hirehub_backend.entity.User;
 import com.hirehub.hirehub_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +26,8 @@ public class AuthService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private ProfileService profileService;
+    @Autowired
+    private EmailVerificationService emailVerificationService;
 
     public AuthResponse register(UserRegisterRequest reqUser) throws Exception {
         Optional<User> founduser = userRepository.findByEmail(reqUser.getEmail());
@@ -37,13 +38,22 @@ public class AuthService {
         reqUser.setProfileId(profileService.createProfile(reqUser.getEmail()));
         user.setPassword(passwordEncoder.encode(reqUser.getPassword()));
         User savedUser = userRepository.save(user);
+        
+        // Send email verification
+        try {
+            emailVerificationService.sendVerificationEmail(savedUser);
+        } catch (Exception e) {
+            // Log error but don't fail registration
+            System.err.println("Failed to send verification email: " + e.getMessage());
+        }
+        
         Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(),
                 null,
                 List.of(new SimpleGrantedAuthority(user.getRole().name())));
         String token = JwtProvider.generateToken(authentication, savedUser.getId());
         return AuthResponse.builder()
                 .token(token)
-                .message("register success")
+                .message("Registration successful! Please check your email to verify your account.")
                 .build();
     }
 

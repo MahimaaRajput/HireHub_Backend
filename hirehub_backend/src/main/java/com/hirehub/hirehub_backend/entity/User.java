@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -33,6 +35,19 @@ public class User {
     @OneToOne
 //    @JoinColumn(name = "profile_id")
     private Profile profile;
+
+    // Email verification fields
+    @Builder.Default
+    private Boolean emailVerified = false;
+    private String emailVerificationToken;
+    private LocalDateTime emailVerificationTokenExpiry;
+
+    // Phone verification fields
+    private String phoneNumber;
+    @Builder.Default
+    private Boolean phoneVerified = false;
+    private String phoneVerificationOtp;
+    private LocalDateTime phoneVerificationOtpExpiry;
 
 
     public UserResponse toResponse() {
