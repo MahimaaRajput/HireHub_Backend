@@ -35,6 +35,7 @@ public class UserRegisterRequest {
    @NotNull(message = "role is required field")
     private Role role;
     private Long profileId;
+    private String captchaToken; // Optional, required if CAPTCHA is enabled
 
 
     public User toEntity()

@@ -30,8 +30,21 @@ public class AuthService {
     private EmailVerificationService emailVerificationService;
     @Autowired
     private TwoFactorAuthService twoFactorAuthService;
+    @Autowired
+    private CaptchaService captchaService;
 
     public AuthResponse register(UserRegisterRequest reqUser) throws Exception {
+        // Verify CAPTCHA if enabled
+        if (captchaService.isCaptchaEnabled()) {
+            if (reqUser.getCaptchaToken() == null || reqUser.getCaptchaToken().isEmpty()) {
+                throw new Exception("CAPTCHA verification is required");
+            }
+            boolean captchaValid = captchaService.verifyCaptcha(reqUser.getCaptchaToken());
+            if (!captchaValid) {
+                throw new Exception("CAPTCHA verification failed. Please try again.");
+            }
+        }
+
         Optional<User> founduser = userRepository.findByEmail(reqUser.getEmail());
         if (founduser.isPresent()) {
             throw new Exception("user already registered with this email: " + reqUser.getEmail());
