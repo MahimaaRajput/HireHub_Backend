@@ -223,3 +223,4 @@ public class RecruiterAnalyticsServiceImpl implements RecruiterAnalyticsService 
 }
 
 
+

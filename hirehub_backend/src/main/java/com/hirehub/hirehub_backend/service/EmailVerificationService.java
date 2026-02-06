@@ -9,3 +9,4 @@ public interface EmailVerificationService {
     String generateVerificationToken();
 }
 
+
