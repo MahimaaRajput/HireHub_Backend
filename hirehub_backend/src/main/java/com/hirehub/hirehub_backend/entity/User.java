@@ -49,6 +49,15 @@ public class User {
     private String phoneVerificationOtp;
     private LocalDateTime phoneVerificationOtpExpiry;
 
+    // Two-factor authentication fields
+    @Builder.Default
+    private Boolean twoFactorEnabled = false;
+    private String twoFactorSecret;
+
+    // Password reset fields
+    private String passwordResetToken;
+    private LocalDateTime passwordResetTokenExpiry;
+
 
     public UserResponse toResponse() {
         return UserResponse.builder()

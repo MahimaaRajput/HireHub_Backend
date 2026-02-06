@@ -6,12 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class AuthResponse {
+public class TwoFactorSetupDto {
+    private String secretKey;
+    private String qrCodeUrl;
     private String message;
-    private String token;
-    private Boolean requires2FA;
-    private String twoFactorSecret; // Only sent when 2FA setup is needed
 }
+

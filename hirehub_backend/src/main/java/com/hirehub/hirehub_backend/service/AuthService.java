@@ -28,6 +28,8 @@ public class AuthService {
     private ProfileService profileService;
     @Autowired
     private EmailVerificationService emailVerificationService;
+    @Autowired
+    private TwoFactorAuthService twoFactorAuthService;
 
     public AuthResponse register(UserRegisterRequest reqUser) throws Exception {
         Optional<User> founduser = userRepository.findByEmail(reqUser.getEmail());
@@ -69,6 +71,16 @@ public class AuthService {
                 throw new RuntimeException("Invalid password");
             }
 
+            // Check if 2FA is enabled
+            if (twoFactorAuthService.is2FAEnabled(user)) {
+                // Return response indicating 2FA is required
+                return AuthResponse.builder()
+                        .token(null)
+                        .message("2FA verification required. Please provide the 2FA code.")
+                        .requires2FA(true)
+                        .build();
+            }
+
             // Create Authentication object
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     user.getEmail(),
@@ -83,6 +95,45 @@ public class AuthService {
             return AuthResponse.builder()
                     .token(token)
                     .message("Login success")
+                    .requires2FA(false)
+                    .build();
+        }
+
+        public AuthResponse verify2FALogin(String email, int code) {
+            //  Check if user exists with given email
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("Email not registered"));
+
+            // Check if 2FA is enabled
+            if (!twoFactorAuthService.is2FAEnabled(user)) {
+                throw new RuntimeException("2FA is not enabled for this account");
+            }
+
+            // Verify 2FA code
+            if (user.getTwoFactorSecret() == null) {
+                throw new RuntimeException("2FA secret not found");
+            }
+
+            boolean isValid = twoFactorAuthService.verifyTotpCode(user.getTwoFactorSecret(), code);
+            if (!isValid) {
+                throw new RuntimeException("Invalid 2FA code");
+            }
+
+            // Create Authentication object
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    user.getEmail(),
+                    null,
+                    List.of(new SimpleGrantedAuthority(user.getRole().name()))
+            );
+
+            //  Generate JWT token
+            String token = JwtProvider.generateToken(authentication, user.getId());
+
+            //  Return token + user data
+            return AuthResponse.builder()
+                    .token(token)
+                    .message("Login success")
+                    .requires2FA(false)
                     .build();
         }
 
