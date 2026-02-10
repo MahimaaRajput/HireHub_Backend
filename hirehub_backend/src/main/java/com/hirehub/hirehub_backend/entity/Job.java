@@ -3,6 +3,7 @@ package com.hirehub.hirehub_backend.entity;
 import com.hirehub.hirehub_backend.dto.ApplicantDto;
 import com.hirehub.hirehub_backend.dto.JobDto;
 import com.hirehub.hirehub_backend.enums.JobStatus;
+import com.hirehub.hirehub_backend.enums.WorkMode;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,7 +40,11 @@ public class Job {
     private JobStatus jobStatus;
     private Long postedBy;
     private String category; // Industry/Category of the job (e.g., IT, Finance, Healthcare, etc.)
-    
+    @Enumerated(EnumType.STRING)
+    private WorkMode workMode; // REMOTE, HYBRID, ON_SITE
+    private LocalDateTime applicationDeadline; // Job expiry / last date to apply
+    private Integer numberOfOpenings; // Number of positions to fill (null = unspecified)
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
@@ -47,7 +52,7 @@ public class Job {
     public JobDto toDto()
     {
         return new JobDto(this.id,this.jobTitle,this.company,this.applicants!=null?this.applicants.stream().map(Applicant::toDto).toList():null,this.about,this.experience,
-                this.jobType,this.location,this.packageOffered,this.description,this.skillsRequired,this.jobStatus,this.postedBy,this.category);
+                this.jobType,this.location,this.packageOffered,this.description,this.skillsRequired,this.jobStatus,this.postedBy,this.category,this.workMode,this.applicationDeadline,this.numberOfOpenings);
     }
 
 }

@@ -9,6 +9,7 @@ import com.hirehub.hirehub_backend.entity.Applicant;
 import com.hirehub.hirehub_backend.entity.Job;
 import com.hirehub.hirehub_backend.entity.User;
 import com.hirehub.hirehub_backend.enums.ApplicationStatus;
+import com.hirehub.hirehub_backend.enums.WorkMode;
 import com.hirehub.hirehub_backend.repository.ApplicantRepository;
 import com.hirehub.hirehub_backend.repository.JobRepository;
 import com.hirehub.hirehub_backend.repository.UserRepository;
@@ -47,6 +48,9 @@ public class JobServiceImpl implements JobService{
         job.setSkillsRequired(jobDto.getSkillsRequired());
         job.setJobStatus(jobDto.getJobStatus());
         job.setCategory(jobDto.getCategory());
+        job.setWorkMode(jobDto.getWorkMode());
+        job.setApplicationDeadline(jobDto.getApplicationDeadline());
+        job.setNumberOfOpenings(jobDto.getNumberOfOpenings());
         job.setApplicants(new ArrayList<>());
 
 //        Long recruiterId = JwtProvider.getUserIdFromToken();
@@ -61,7 +65,11 @@ public class JobServiceImpl implements JobService{
 
     @Override
     public List<JobDto> getAllJob() {
-        return jobRepository.findAll().stream().map(Job::toDto).collect(Collectors.toList());
+        LocalDateTime now = LocalDateTime.now();
+        return jobRepository.findAll().stream()
+                .filter(j -> j.getApplicationDeadline() == null || !j.getApplicationDeadline().isBefore(now))
+                .map(Job::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -72,8 +80,14 @@ public class JobServiceImpl implements JobService{
     @Override
     public String applyJob(Long id, ApplicantDto applicantDto) throws Exception {
         Job job=jobRepository.findById(id).orElseThrow(()->new Exception("job not found with this id"));
+        if (job.getApplicationDeadline() != null && LocalDateTime.now().isAfter(job.getApplicationDeadline())) {
+            throw new Exception("Application deadline for this job has passed");
+        }
         List<Applicant> applicants=job.getApplicants();
         if (applicants==null)applicants=new ArrayList<>();
+        if (job.getNumberOfOpenings() != null && job.getNumberOfOpenings() > 0 && applicants.size() >= job.getNumberOfOpenings()) {
+            throw new Exception("No openings left for this job");
+        }
         
         // Check if user has already applied (by email or by user ID if linked)
         if(applicants.stream().anyMatch(x -> 
@@ -155,13 +169,17 @@ public class JobServiceImpl implements JobService{
         if (keyword == null || keyword.trim().isEmpty()) {
             return getAllJob();
         }
+        LocalDateTime now = LocalDateTime.now();
         List<Job> jobs = jobRepository.searchJobsByKeyword(keyword.trim());
-        return jobs.stream().map(Job::toDto).collect(Collectors.toList());
+        return jobs.stream()
+                .filter(j -> j.getApplicationDeadline() == null || !j.getApplicationDeadline().isBefore(now))
+                .map(Job::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<JobDto> filterJobs(Long minSalary, Long maxSalary, String experience, 
-                                   String location, String jobType, String category, LocalDateTime startDate, LocalDateTime endDate) {
+                                   String location, String jobType, String category, WorkMode workMode, LocalDateTime startDate, LocalDateTime endDate) {
         List<Job> jobs = jobRepository.filterJobs(
                 minSalary, 
                 maxSalary, 
@@ -169,10 +187,15 @@ public class JobServiceImpl implements JobService{
                 location != null ? location.trim() : null,
                 jobType != null ? jobType.trim() : null,
                 category != null ? category.trim() : null,
+                workMode,
                 startDate,
                 endDate
         );
-        return jobs.stream().map(Job::toDto).collect(Collectors.toList());
+        LocalDateTime now = LocalDateTime.now();
+        return jobs.stream()
+                .filter(j -> j.getApplicationDeadline() == null || !j.getApplicationDeadline().isBefore(now))
+                .map(Job::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -180,8 +203,12 @@ public class JobServiceImpl implements JobService{
         if (category == null || category.trim().isEmpty()) {
             return getAllJob();
         }
+        LocalDateTime now = LocalDateTime.now();
         List<Job> jobs = jobRepository.findByCategoryIgnoreCase(category.trim());
-        return jobs.stream().map(Job::toDto).collect(Collectors.toList());
+        return jobs.stream()
+                .filter(j -> j.getApplicationDeadline() == null || !j.getApplicationDeadline().isBefore(now))
+                .map(Job::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -190,8 +217,12 @@ public class JobServiceImpl implements JobService{
             return getAllJob();
         }
         // Use contains search for more flexible matching
+        LocalDateTime now = LocalDateTime.now();
         List<Job> jobs = jobRepository.findByCompanyContainingIgnoreCase(company.trim());
-        return jobs.stream().map(Job::toDto).collect(Collectors.toList());
+        return jobs.stream()
+                .filter(j -> j.getApplicationDeadline() == null || !j.getApplicationDeadline().isBefore(now))
+                .map(Job::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -226,7 +257,11 @@ public class JobServiceImpl implements JobService{
             }
         }
         
-        return jobs.stream().map(Job::toDto).collect(Collectors.toList());
+        LocalDateTime now = LocalDateTime.now();
+        return jobs.stream()
+                .filter(j -> j.getApplicationDeadline() == null || !j.getApplicationDeadline().isBefore(now))
+                .map(Job::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
