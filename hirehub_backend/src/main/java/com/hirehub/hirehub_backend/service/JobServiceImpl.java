@@ -9,6 +9,7 @@ import com.hirehub.hirehub_backend.entity.Applicant;
 import com.hirehub.hirehub_backend.entity.Job;
 import com.hirehub.hirehub_backend.entity.User;
 import com.hirehub.hirehub_backend.enums.ApplicationStatus;
+import com.hirehub.hirehub_backend.enums.JobPriority;
 import com.hirehub.hirehub_backend.enums.ShiftTiming;
 import com.hirehub.hirehub_backend.enums.WorkMode;
 import com.hirehub.hirehub_backend.repository.ApplicantRepository;
@@ -53,6 +54,9 @@ public class JobServiceImpl implements JobService{
         job.setApplicationDeadline(jobDto.getApplicationDeadline());
         job.setNumberOfOpenings(jobDto.getNumberOfOpenings());
         job.setShiftTiming(jobDto.getShiftTiming());
+        job.setBenefitsPerks(jobDto.getBenefitsPerks());
+        job.setJobPriority(jobDto.getJobPriority());
+        job.setIndustries(jobDto.getIndustries());
         job.setApplicants(new ArrayList<>());
 
 //        Long recruiterId = JwtProvider.getUserIdFromToken();
@@ -181,7 +185,7 @@ public class JobServiceImpl implements JobService{
 
     @Override
     public List<JobDto> filterJobs(Long minSalary, Long maxSalary, String experience, 
-                                   String location, String jobType, String category, WorkMode workMode, ShiftTiming shiftTiming, LocalDateTime startDate, LocalDateTime endDate) {
+                                   String location, String jobType, String category, WorkMode workMode, ShiftTiming shiftTiming, JobPriority jobPriority, LocalDateTime startDate, LocalDateTime endDate) {
         List<Job> jobs = jobRepository.filterJobs(
                 minSalary, 
                 maxSalary, 
@@ -191,6 +195,7 @@ public class JobServiceImpl implements JobService{
                 category != null ? category.trim() : null,
                 workMode,
                 shiftTiming,
+                jobPriority,
                 startDate,
                 endDate
         );

@@ -93,6 +93,7 @@ public class JobController {
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String workMode,
             @RequestParam(required = false) String shiftTiming,
+            @RequestParam(required = false) String jobPriority,
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
         
@@ -106,6 +107,12 @@ public class JobController {
         if (shiftTiming != null && !shiftTiming.trim().isEmpty()) {
             try {
                 shiftTimingEnum = com.hirehub.hirehub_backend.enums.ShiftTiming.valueOf(shiftTiming.trim().toUpperCase());
+            } catch (IllegalArgumentException ignored) { }
+        }
+        com.hirehub.hirehub_backend.enums.JobPriority jobPriorityEnum = null;
+        if (jobPriority != null && !jobPriority.trim().isEmpty()) {
+            try {
+                jobPriorityEnum = com.hirehub.hirehub_backend.enums.JobPriority.valueOf(jobPriority.trim().toUpperCase());
             } catch (IllegalArgumentException ignored) { }
         }
         LocalDateTime startDateTime = null;
@@ -136,7 +143,7 @@ public class JobController {
             }
         }
         
-        List<JobDto> jobs = jobService.filterJobs(minSalary, maxSalary, experience, location, jobType, category, workModeEnum, shiftTimingEnum, startDateTime, endDateTime);
+        List<JobDto> jobs = jobService.filterJobs(minSalary, maxSalary, experience, location, jobType, category, workModeEnum, shiftTimingEnum, jobPriorityEnum, startDateTime, endDateTime);
         return new ResponseEntity<>(jobs, HttpStatus.OK);
     }
 

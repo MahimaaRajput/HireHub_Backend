@@ -2,6 +2,7 @@ package com.hirehub.hirehub_backend.entity;
 
 import com.hirehub.hirehub_backend.dto.ApplicantDto;
 import com.hirehub.hirehub_backend.dto.JobDto;
+import com.hirehub.hirehub_backend.enums.JobPriority;
 import com.hirehub.hirehub_backend.enums.JobStatus;
 import com.hirehub.hirehub_backend.enums.ShiftTiming;
 import com.hirehub.hirehub_backend.enums.WorkMode;
@@ -47,6 +48,12 @@ public class Job {
     private Integer numberOfOpenings; // Number of positions to fill (null = unspecified)
     @Enumerated(EnumType.STRING)
     private ShiftTiming shiftTiming;
+    @ElementCollection
+    private List<String> benefitsPerks;
+    @Enumerated(EnumType.STRING)
+    private JobPriority jobPriority;
+    @ElementCollection
+    private List<String> industries;
 
     @CreationTimestamp
     @Column(updatable = false)
@@ -55,7 +62,7 @@ public class Job {
     public JobDto toDto()
     {
         return new JobDto(this.id,this.jobTitle,this.company,this.applicants!=null?this.applicants.stream().map(Applicant::toDto).toList():null,this.about,this.experience,
-                this.jobType,this.location,this.packageOffered,this.description,this.skillsRequired,this.jobStatus,this.postedBy,this.category,this.workMode,this.applicationDeadline,this.numberOfOpenings,this.shiftTiming);
+                this.jobType,this.location,this.packageOffered,this.description,this.skillsRequired,this.jobStatus,this.postedBy,this.category,this.workMode,this.applicationDeadline,this.numberOfOpenings,this.shiftTiming,this.benefitsPerks,this.jobPriority,this.industries);
     }
 
 }

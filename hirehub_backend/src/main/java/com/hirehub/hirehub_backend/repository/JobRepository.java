@@ -1,6 +1,7 @@
 package com.hirehub.hirehub_backend.repository;
 
 import com.hirehub.hirehub_backend.entity.Job;
+import com.hirehub.hirehub_backend.enums.JobPriority;
 import com.hirehub.hirehub_backend.enums.ShiftTiming;
 import com.hirehub.hirehub_backend.enums.WorkMode;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -31,6 +32,7 @@ public interface JobRepository extends JpaRepository<Job,Long> {
            "(:category IS NULL OR LOWER(j.category) LIKE LOWER(CONCAT('%', :category, '%'))) AND " +
            "(:workMode IS NULL OR j.workMode = :workMode) AND " +
            "(:shiftTiming IS NULL OR j.shiftTiming = :shiftTiming) AND " +
+           "(:jobPriority IS NULL OR j.jobPriority = :jobPriority) AND " +
            "(:startDate IS NULL OR j.createdAt >= :startDate) AND " +
            "(:endDate IS NULL OR j.createdAt <= :endDate) AND " +
            "j.jobStatus = 'OPEN'")
@@ -43,6 +45,7 @@ public interface JobRepository extends JpaRepository<Job,Long> {
             @Param("category") String category,
             @Param("workMode") WorkMode workMode,
             @Param("shiftTiming") ShiftTiming shiftTiming,
+            @Param("jobPriority") JobPriority jobPriority,
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate
     );
