@@ -22,7 +22,7 @@ public interface  JobService {
     List<JobDto> searchJobsByKeyword(String keyword);
     
     List<JobDto> filterJobs(Long minSalary, Long maxSalary, String experience, 
-                           String location, String jobType, String category, com.hirehub.hirehub_backend.enums.WorkMode workMode, LocalDateTime startDate, LocalDateTime endDate);
+                           String location, String jobType, String category, com.hirehub.hirehub_backend.enums.WorkMode workMode, com.hirehub.hirehub_backend.enums.ShiftTiming shiftTiming, LocalDateTime startDate, LocalDateTime endDate);
     
     List<JobDto> getJobsByCategory(String category);
     
