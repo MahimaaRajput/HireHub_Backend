@@ -38,7 +38,7 @@ public class RecruiterAnalyticsServiceImpl implements RecruiterAnalyticsService 
         analytics.setTotalJobsPosted((long) recruiterJobs.size());
         
         long activeJobs = recruiterJobs.stream()
-                .filter(j -> "OPEN".equalsIgnoreCase(j.getJobStatus()))
+                .filter(j -> com.hirehub.hirehub_backend.enums.JobStatus.OPEN.equals(j.getJobStatus()))
                 .count();
         analytics.setActiveJobs(activeJobs);
 
@@ -162,7 +162,7 @@ public class RecruiterAnalyticsServiceImpl implements RecruiterAnalyticsService 
 
         analytics.setTotalJobViews(jobAnalytics.getTotalViews());
         analytics.setTotalJobsPosted(1L);
-        analytics.setActiveJobs("OPEN".equalsIgnoreCase(job.getJobStatus()) ? 1L : 0L);
+        analytics.setActiveJobs(com.hirehub.hirehub_backend.enums.JobStatus.OPEN.equals(job.getJobStatus()) ? 1L : 0L);
 
         return analytics;
     }

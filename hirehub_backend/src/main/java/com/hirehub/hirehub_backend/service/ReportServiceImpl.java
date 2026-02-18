@@ -153,7 +153,7 @@ public class ReportServiceImpl implements ReportService {
                     job.getLocation() != null ? job.getLocation() : "",
                     job.getJobStatus() != null ? job.getJobStatus().name() : "",
                     job.getCategory() != null ? job.getCategory() : "",
-                    job.getPostedBy() != null ? job.getPostedBy() : "",
+                    job.getPostedBy() != null ? job.getPostedBy().toString() : "",
                     job.getCreatedAt() != null ? job.getCreatedAt().format(formatter) : ""
                 });
             }

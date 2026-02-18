@@ -3,6 +3,7 @@ package com.hirehub.hirehub_backend.service;
 import com.hirehub.hirehub_backend.dto.JobDto;
 import com.hirehub.hirehub_backend.entity.Job;
 import com.hirehub.hirehub_backend.entity.JobView;
+import com.hirehub.hirehub_backend.enums.JobStatus;
 import com.hirehub.hirehub_backend.entity.Profile;
 import com.hirehub.hirehub_backend.entity.User;
 import com.hirehub.hirehub_backend.repository.JobRepository;
@@ -119,8 +120,7 @@ public class JobRecommendationServiceImpl implements JobRecommendationService {
         
         // Get all active jobs except the source job
         List<Job> allJobs = jobRepository.findAll().stream()
-                .filter(job -> !job.getId().equals(jobId) && job.getJobStatus() != null && 
-                        job.getJobStatus().toString().equals("ACTIVE"))
+                .filter(job -> !job.getId().equals(jobId) && JobStatus.OPEN.equals(job.getJobStatus()))
                 .collect(Collectors.toList());
         
         // Calculate similarity score for each job
@@ -146,8 +146,9 @@ public class JobRecommendationServiceImpl implements JobRecommendationService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new Exception("User not found"));
         
-        Profile profile = profileRepository.findByUser(user)
-                .orElse(null);
+        Profile profile = user.getEmail() != null
+                ? profileRepository.findByEmail(user.getEmail()).orElse(null)
+                : null;
         
         if (profile == null) {
             return new ArrayList<>();
@@ -157,8 +158,7 @@ public class JobRecommendationServiceImpl implements JobRecommendationService {
         
         // Get all active jobs
         List<Job> allJobs = jobRepository.findAll().stream()
-                .filter(job -> job.getJobStatus() != null && 
-                        job.getJobStatus().toString().equals("ACTIVE"))
+                .filter(job -> JobStatus.OPEN.equals(job.getJobStatus()))
                 .collect(Collectors.toList());
         
         // Calculate match score for each job based on profile
@@ -221,10 +221,10 @@ public class JobRecommendationServiceImpl implements JobRecommendationService {
             }
         }
         
-        // Experience level match (10% weight)
-        if (job1.getExperienceLevel() != null && job2.getExperienceLevel() != null) {
+        // Experience match (10% weight) - Job has experience (String), not experienceLevel
+        if (job1.getExperience() != null && job2.getExperience() != null) {
             maxScore += 0.1;
-            if (job1.getExperienceLevel().equalsIgnoreCase(job2.getExperienceLevel())) {
+            if (job1.getExperience().equalsIgnoreCase(job2.getExperience())) {
                 score += 0.1;
             }
         }
@@ -261,14 +261,14 @@ public class JobRecommendationServiceImpl implements JobRecommendationService {
             }
         }
         
-        // Experience level match (15% weight) - based on experiences in profile
+        // Experience match (15% weight) - based on experiences in profile; Job has experience (String)
         if (profile.getExperiences() != null && !profile.getExperiences().isEmpty() && 
-            job.getExperienceLevel() != null) {
+            job.getExperience() != null) {
             maxScore += 0.15;
-            // Check if any experience title matches the job's experience level
+            String jobExp = job.getExperience().toLowerCase();
             boolean experienceMatch = profile.getExperiences().stream()
                     .anyMatch(exp -> exp.getTitle() != null && 
-                            exp.getTitle().toLowerCase().contains(job.getExperienceLevel().toLowerCase()));
+                            exp.getTitle().toLowerCase().contains(jobExp));
             if (experienceMatch) {
                 score += 0.15;
             }

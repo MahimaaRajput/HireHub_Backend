@@ -1,5 +1,6 @@
 package com.hirehub.hirehub_backend.service;
 
+import com.hirehub.hirehub_backend.dto.CompanyDashboardDto;
 import com.hirehub.hirehub_backend.dto.CompanyDto;
 
 import java.util.List;

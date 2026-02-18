@@ -6,6 +6,7 @@ import com.hirehub.hirehub_backend.entity.Company;
 import com.hirehub.hirehub_backend.entity.Job;
 import com.hirehub.hirehub_backend.entity.User;
 import com.hirehub.hirehub_backend.enums.ApplicationStatus;
+import com.hirehub.hirehub_backend.enums.JobStatus;
 import com.hirehub.hirehub_backend.enums.Role;
 import com.hirehub.hirehub_backend.enums.VerificationStatus;
 import com.hirehub.hirehub_backend.repository.ApplicantRepository;
@@ -71,12 +72,12 @@ public class AdminAnalyticsServiceImpl implements AdminAnalyticsService {
         dashboard.setTotalJobs((long) allJobs.size());
         
         long activeJobs = allJobs.stream()
-                .filter(j -> "OPEN".equalsIgnoreCase(j.getJobStatus()))
+                .filter(j -> JobStatus.OPEN.equals(j.getJobStatus()))
                 .count();
         dashboard.setActiveJobs(activeJobs);
         
         long closedJobs = allJobs.stream()
-                .filter(j -> "CLOSED".equalsIgnoreCase(j.getJobStatus()))
+                .filter(j -> JobStatus.CLOSED.equals(j.getJobStatus()))
                 .count();
         dashboard.setClosedJobs(closedJobs);
 
